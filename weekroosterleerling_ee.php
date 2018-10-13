@@ -1,7 +1,64 @@
 <?php
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+  include("includes/functions.php");
+
+  if ($_GET['test']==1) {
+    echo "<pre>";
+    var_dump($_SESSION);
+    echo "</pre>";
+    echo getNameTeacher($_SESSION['sCode']);
+  }
+
+  //TODO: Checken of dit noodzakelijk is
+  ConnectSQLDatabase();
+
+  // ERRORS
+  // ini_set('display_errors', 1);
+  // ini_set('display_startup_errors', 1);
+  // error_reporting(E_ALL);
+
+  // om overal het sessiegedoe eruit te kunnen halen
+  if(isset($_GET['docent'])) {
+    $_SESSION['sUsername']=$_GET['docent'];
+  }
+  $ingelogde_docent=$_SESSION["sUsername"];
+  $docent=$ingelogde_docent;
+  // TODO: Checken of dit goed gaat, icm sCode.
+
+  if(isset($_GET['klas'])) {
+    $klas_ll=$_GET['klas'];
+  }
+  else {
+    $klas_ll=$_SESSION['klas'];
+  }
+
+  if(isset($_GET['sCode'])) {
+    //TODO: Volgens mij gaat hier iets mee mis. Met Bram checken hoe dit zit!
+    $_SESSION['sCode']=$_GET['sCode'];
+  }
+
+  if(isset($_GET['ll'])) {
+    $leerling_id=$_GET['ll'];
+  }
+  // TODO: Error als dit ontbreekt.
+
+  if(isset($_GET['week'])) {
+    $week=$_GET['week'];
+  } else {
+    $_SESSION['weeknummer']=  intval(date('W'));
+    $week=intval(date('W'))+1;
+  }
+
+
+
+
+  //$_SESSION['weeknummer']=  $_SESSION['weeknummer'];
+  // echo "dsfsdfsdf".$ingelogde_docent."<br>";
+  //echo "<pre>";
+  //var_dump($_SESSION);
+  //echo "</pre>";
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="nl"><head>
@@ -44,17 +101,6 @@
 <?php
 // SOME STUFF FOR IN HEADER
   include("header_ee.inc");
-  include("includes/functions.php");
-  $_SESSION['weeknummer']=  intval(date('W'));
-
-  if ($_GET['test']==1) {
-    echo "<pre>";
-    var_dump($_SESSION);
-    echo "</pre>";
-    echo getNameTeacher($_SESSION['sCode']);
-    // $_SESSION['weeknummer']=$_GET['week'];
-  }
-  ConnectSQLDatabase();
 ?>
 
 <?
@@ -111,40 +157,6 @@ $tekst_grootte=  getINIT("font_size");
 
 //        $docent="Laura";
 //       $_SESSION["docent"]=$docent;
-
-// TEST ERWIN
-// om overal het sessiegedoe eruit te kunnen halen
-if(isset($_GET['docent'])) {
-  $_SESSION['sUsername']=$_GET['docent'];
-}
-
-if(isset($_GET['klas'])) {
-  $klas_ll=$_GET['klas'];
-}
-else {
-  $klas_ll=$_SESSION['klas'];
-}
-
-if(isset($_GET['sCode'])) {
-  $_SESSION['sCode']=$_GET['sCode'];
-}
-
-if(isset($_GET['ll'])) {
-  $leerling_id=$_GET['ll'];
-}
-// $leerling_id=$_GET['ll'];
-// $_SESSION["leerlingID"]=$leerling_id;
-
-$ingelogde_docent=$_SESSION["sUsername"];
-$docent=$ingelogde_docent;
-$week=intval(date('W'))+1;
-//$_SESSION['weeknummer']=  $_SESSION['weeknummer'];
-// echo "dsfsdfsdf".$ingelogde_docent."<br>";
-//echo "<pre>";
-//var_dump($_SESSION);
-//echo "</pre>";
-
-
 ?>
 
 <?
