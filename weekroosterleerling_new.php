@@ -910,7 +910,7 @@
                 </div>
               <? } ?>
               <h4 class="margin-none">
-                <i class="fa fa-calendar"></i> Weektaak <span class="leerlingnaam"><?php echo getStudentName($leerling_id);?> </span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?>
+                <i class="fa fa-calendar"></i> Weektaak <span class="leerlingnaam"><?php echo getStudentName($leerling_id);?></span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?>
               </h4>
               <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
             </div>
@@ -918,7 +918,7 @@
         </div><!-- /.col-lg-12 -->
       </div><!-- /.row -->
 
-      <div class="row tabel_rooster">
+      <div class="row tabel_rooster page-break-after">
         <!--begin maandag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
@@ -958,7 +958,24 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="row tabel_rooster page-break-after">
         <!--eind woensdag-->
+          <? if($_GET['output']=="clean") {
+             // ONLY SHOW IN CLEAN VERSION FOR PDF
+          ?>
+          <div class="col-lg-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="margin-none">
+                  <i class="fa fa-calendar"></i> Weektaak <span class="leerlingnaam"><?php echo getStudentName($leerling_id);?></span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?> (pagina 2)
+                </h4>
+                <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
+              </div>
+            </div>
+          </div>
+          <? } ?>
+
         <!--begin donderdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
