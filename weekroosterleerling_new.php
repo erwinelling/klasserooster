@@ -1,6 +1,6 @@
 <?php error_reporting(0);session_start();?>
 <?
-  //TODO: controleren of het klopt met recente week pdf
+  //TODO: controleren of het klopt met recente week pdf en met juiste variabelen
   //TODO: verder ordenen
   //TODO: functions opruimen
   //TODO: css netjes in files
@@ -34,7 +34,8 @@
   if(isset($_GET['klas'])) {
     // Overwrite existing session var with GET var
     // e.g. klas=1
-    $_SESSION['klas']=$_GET['klas'];
+    $klas_ll=$_GET['klas'];
+  } else {
     $klas_ll=$_SESSION['klas'];
   }
 
@@ -149,16 +150,16 @@
                                           </thead>
                                           <tbody>
                                               ";
-                                                 haalDagroosterOp($ll,$week,$dag, "1");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag, "1");
 
-                                                 haalDagroosterOp($ll,$week,$dag,"2");
-
-
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"2");
 
 
 
 
-                                                 haalDagroosterOp($ll,$week,$dag,"3");
+
+
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"3");
 
 
 
@@ -172,11 +173,11 @@
                                                   <td colspan=3 class='center-text' >".haalAlgemeen("eindeochtend")."</td>
                                                 </tr>";
 
-                                                 haalDagroosterOp($ll,$week,$dag,"4");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"4");
 
 
 
-                                                 haalDagroosterOp($ll,$week,$dag,"5");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"5");
 
 
 
@@ -187,21 +188,21 @@
                                                 </tr>
 
                                                 ";
-                                                 haalDagroosterOp($ll,$week,$dag,"6");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"6");
 
 
 
 
-                                                 haalDagroosterOp($ll,$week,$dag,"7");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"7");
 
 
 
 
 
 
-                                                 haalDagroosterOp($ll,$week,$dag,"8");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"8");
 
-                                                   haalDagroosterOp($ll,$week,$dag,"9");
+                                                   haalDagroosterOp($ll,$klas_ll,$week,$dag,"9");
 
                                              echo "
                                           </tbody>
@@ -220,16 +221,16 @@
                                               </tr>
                                           </thead>
                                           <tbody>";
-        haalDagroosterOp($ll,$week,$dag,"1");
+        haalDagroosterOp($ll,$klas_ll,$week,$dag,"1");
 
-                                                 haalDagroosterOp($ll,$week,$dag,"2");
-
-
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"2");
 
 
 
 
-                                                 haalDagroosterOp($ll,$week,$dag,"3");
+
+
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"3");
 
 
 
@@ -242,16 +243,16 @@
                                                   <td colspan=3 class='center-text'>".haalAlgemeen("eindeochtend")."</td>
                                                 </tr>";
 
-                                                 haalDagroosterOp($ll,$week,$dag,"4");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"4");
 
 
 
-                                                 haalDagroosterOp($ll,$week,$dag,"5");
+                                                 haalDagroosterOp($ll,$klas_ll,$week,$dag,"5");
 
 
-                                                   haalDagroosterOp($ll,$week,$dag,"6");
+                                                   haalDagroosterOp($ll,$klas_ll,$week,$dag,"6");
 
-                                             haalDagroosterOp($ll,$week,$dag,"7");
+                                             haalDagroosterOp($ll,$klas_ll,$week,$dag,"7");
 
 
 
@@ -273,7 +274,7 @@
 
 
 
-   function getHomework($ll,$week,$dag)
+   function getHomework($ll,$klas_ll,$week,$dag)
                     {
 
 
@@ -281,13 +282,10 @@
                                           <thead>
                                               <tr>
                                                   <th colspan='3'>Verplicht werk</th>
-
                                               </tr>
                                           </thead>
                                           <tbody>";
          // rooster voor volgende week
-                                             // $week=$_SESSION['weeknummer']+1;
-                                             $klas_ll=$_SESSION['klas'];
                                               $sSql = "
                                                   SELECT
                                                      *
@@ -358,7 +356,7 @@
 
 
                                                 if ($context_aanwezig==0){
-                                                  echo "<tr><td colspan=3>Geen werk voor vandaag</td></tr>";
+                                                  echo "<tr><td>Geen werk voor vandaag</td><td></td><td></td></tr>";
                                               }
 
 
@@ -593,7 +591,7 @@
           }
 
 
-          function haalExtraroosterop($ll,$week,$dag,$blok){
+          function haalExtraroosterop($ll,$klas_ll,$week,$dag,$blok){
               ConnectSQLDatabase();
               //echo "weeknummer".$week;
               $split=  getINIT("split_rooster");
@@ -613,7 +611,7 @@
                   $wat_docent[].=$row['vloer'];
                   $wat_docent[].=$row['stilwerk'];
                   $wat_docent[].=$row['vakles'];
-                  $klas_ll=$_SESSION['klas'];
+                  // $klas_ll=$_SESSION['klas'];
 
                  // $docent=getTeacher($klas_ll);
 
@@ -663,7 +661,7 @@
 
 
 
-           function haalDagroosterOp($ll,$week,$dag,$blok)
+           function haalDagroosterOp($ll,$klas_ll,$week,$dag,$blok)
                   {
               // huidige week.
              ConnectSQLDatabase();
@@ -685,7 +683,7 @@
                   $wat_docent[].=$row['vloer'];
                   $wat_docent[].=$row['stilwerk'];
                   $wat_docent[].=$row['vakles'];
-                  $klas_ll=$_SESSION['klas'];
+                  // $klas_ll=$_SESSION['klas'];
                   $docent=getNameTeacher($_SESSION['sCode']);
 
                   for ($i=0;$i<count($wat_docent);$i++)
@@ -752,7 +750,7 @@
   //                    }
 
 
-                  $extrataak=haalExtraroosterop($ll,$week,$dag,$blok);
+                  $extrataak=haalExtraroosterop($ll,$klas_ll,$week,$dag,$blok);
                 //echo "Bram".$blok;
                   $docent_oud="";
 
@@ -853,6 +851,7 @@
     if($_GET['output']!="clean") { // DO NOT SHOW IN CLEAN VERSION FOR PDF
       include("header_new.inc");
     } else {
+      echo '<title>Klasse(n)rooster.nl</title>';
       echo '<link href="css/bootstrap.css" rel="stylesheet">';
     }
   ?>
@@ -919,7 +918,7 @@
         </div><!-- /.col-lg-12 -->
       </div><!-- /.row -->
 
-      <div class="row" id="tabel_rooster" name="">
+      <div class="row" id="tabel_rooster">
         <!--begin maandag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
@@ -1042,7 +1041,7 @@
 
 
                                               if ($context_aanwezig==0){
-                                                echo "<tr><td colspan=3>Geen werk voor deze week</td></tr>";
+                                                echo "<tr><td>Geen werk voor vandaag</td><td></td><td></td></tr>";
                                             }
                                             ?>
                 </tbody>
@@ -1099,7 +1098,7 @@
 
 
                                               if ($context_aanwezig==0){
-                                                echo "<tr><td colspan=2>Geen werk voor deze week</td></tr>";
+                                                echo "<tr><td>Geen werk voor vandaag</td><td></td><td></td></tr>";
                                             }
                                             ?>
                 </tbody>
