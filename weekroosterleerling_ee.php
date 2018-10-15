@@ -1,4 +1,14 @@
 <?php
+
+// TODO:
+// * weekroosterleerling helemaal opnieuw namaken (vergelijk deze file)
+// * globale variabelen goed fixen (ipv sessies etc. en zodat hij het zonder inloggen doet)
+// * leerlingen forloop fixen
+// * html apart laten outputten
+// * ordenen
+// * klasses van maken
+// * misschien iets doen met templates
+
   include("includes/functions.php");
 
   //TODO: Checken of dit noodzakelijk is
@@ -43,12 +53,13 @@
   }
   // TODO: Error geven als dit ontbreekt.
 
-  if(isset($_GET['week'])) {
-    $week=$_GET['week'];
-  } else {
-    // VOLGENDE WEEK!
-    $week=intval(date('W'))+1;
-  }
+
+  // if(isset($_GET['week'])) {
+  //   $week=$_GET['week'];
+  // } else {
+  //   // VOLGENDE WEEK!
+  //   $week=intval(date('W'))+1;
+  // }
 
 ?>
 <!DOCTYPE html>
@@ -166,7 +177,7 @@ function getStudentName($id) {
 }
 
 
-function makeDay($week,$dag,$klas_ll,$leerling_id){
+function makeDay($dag,$klas_ll,$leerling_id){
   echo "
         <table class=\"table table-striped table-bordered table-hover\">
             <tr>
@@ -175,34 +186,34 @@ function makeDay($week,$dag,$klas_ll,$leerling_id){
                  <td>Plek</td>
             </tr>";
 
-   haalDagroosterOp($week,$dag,"1",$klas_ll,$leerling_id);
-   haalDagroosterOp($week,$dag,"2",$klas_ll,$leerling_id);
-   haalDagroosterOp($week,$dag,"3",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"1",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"2",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"3",$klas_ll,$leerling_id);
 
    echo "
             <tr>
               <td colspan=3 class='center-text' >".haalAlgemeen("eindeochtend")."</td>
             </tr>";
 
-   haalDagroosterOp($week,$dag,"4",$klas_ll,$leerling_id);
-   haalDagroosterOp($week,$dag,"5",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"4",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"5",$klas_ll,$leerling_id);
 
    echo "
             <tr>
               <td colspan=3 class='center-text'>".haalAlgemeen("middag")."</td>
             </tr>";
 
-   haalDagroosterOp($week,$dag,"6",$klas_ll,$leerling_id);
-   haalDagroosterOp($week,$dag,"7",$klas_ll,$leerling_id);
-   haalDagroosterOp($week,$dag,"8",$klas_ll,$leerling_id);
-   haalDagroosterOp($week,$dag,"9",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"6",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"7",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"8",$klas_ll,$leerling_id);
+   haalDagroosterOp($dag,"9",$klas_ll,$leerling_id);
 
    echo "
          </table>
         ";
 }
 
-function makeoddDay($week,$dag,$klas_ll,$leerling_id){
+function makeoddDay($dag,$klas_ll,$leerling_id){
   echo "
         <table class=\"table table-striped table-bordered table-hover\">
             <tr>
@@ -211,19 +222,19 @@ function makeoddDay($week,$dag,$klas_ll,$leerling_id){
               <td>Plek</td>
             </tr>";
 
-  haalDagroosterOp($week,$dag,"1",$klas_ll,$leerling_id);
-  haalDagroosterOp($week,$dag,"2",$klas_ll,$leerling_id);
-  haalDagroosterOp($week,$dag,"3",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"1",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"2",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"3",$klas_ll,$leerling_id);
 
   echo "
             <tr>
               <td colspan=3 class='center-text'>".haalAlgemeen("eindeochtend")."</td>
             </tr>";
 
-  haalDagroosterOp($week,$dag,"4",$klas_ll,$leerling_id);
-  haalDagroosterOp($week,$dag,"5",$klas_ll,$leerling_id);
-  haalDagroosterOp($week,$dag,"6",$klas_ll,$leerling_id);
-  haalDagroosterOp($week,$dag,"7",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"4",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"5",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"6",$klas_ll,$leerling_id);
+  haalDagroosterOp($dag,"7",$klas_ll,$leerling_id);
 
   echo "
             <tr>
@@ -232,7 +243,8 @@ function makeoddDay($week,$dag,$klas_ll,$leerling_id){
         </table>";
 }
 
-function getHomework($week, $dag, $klas_ll, $leerling_id) {
+function getHomework($dag, $klas_ll, $leerling_id) {
+  $week=intval(date('W'))+1;
   echo "
         <table class=\"table table-striped table-bordered table-hover\">
             <tr><td colspan='3'>Verplicht werk</td></tr>";
@@ -304,8 +316,8 @@ function getHomework($week, $dag, $klas_ll, $leerling_id) {
 }
 
 
-function getAdditionalCourse($blok_rooster,$blok_deel_rooster,$docent,$week,$dag) {
-  // $week=$_SESSION['weeknummer']+1;
+function getAdditionalCourse($blok_rooster,$blok_deel_rooster,$docent,$dag) {
+  $week=intval(date('W'))+1;
   $sSql="SELECT * FROM  `extra_vakken` WHERE blok='".$blok_rooster."' AND klas='".$docent."' AND week='".$week."' AND dag='".$dag."'";
   // echo $sSql;
   $result_v = mysql_query($sSql);
@@ -458,11 +470,9 @@ function haalNaamstudent($id) {
   }
 }
 
-function haalExtraroosterop($week,$dag,$blok,$klas_ll){
+function haalExtraroosterop($dag,$blok,$klas_ll){
   ConnectSQLDatabase();
-  echo "weeknummer".$week;
-  $week=date("W")+1;
-  echo "weeknummer".$week;
+  $week=intval(date('W'))+1;
   $split=  getINIT("split_rooster");
   //dubbel
   $sql="select * from schedule_extra where weeknummer='".$week."' and dag='".$dag."' and blok='".$blok."'";
@@ -515,11 +525,10 @@ function haalExtraroosterop($week,$dag,$blok,$klas_ll){
   return $antwoord;
 }
 
-function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
-  // huidige week.
+function haalDagroosterOp($dag,$blok,$klas_ll,$leerling_id) {
   ConnectSQLDatabase();
   $split=  getINIT("split_rooster");
-  // $week=intval(date('W'))+1;
+  $week=intval(date('W'))+1;
   $sql="select * from schedule where weeknummer='".$week."' and dag='".$dag."' and blok='".$blok."'";
   // echo "<br><pre>".$sql."</pre>";
 
@@ -583,7 +592,7 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
       //                          }
       //                    }
 
-      $extrataak=haalExtraroosterop($week,$dag,$blok,$klas_ll);
+      $extrataak=haalExtraroosterop($dag,$blok,$klas_ll);
       //echo "Bram".$blok;
       $docent_oud="";
 
@@ -597,7 +606,7 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
     }
     else {
       if ( $wat=="" && $extrataak[1]=="") {
-        $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$week,$dag);
+        $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$dag);
         //echo "dsf";
         // exit();
         // als er geen informatie wordt gevonden dan alleen blok laten zien.
@@ -707,8 +716,8 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
               <div class="panel-body highpanel" id="tabel_rooster_maandag">
                 <h5>Maandag</h5>
                 <?php
-                  getHomework($week, "1", $klas_ll, $leerling_id);
-                  makeDay($week, "1", $klas_ll, $leerling_id);
+                  getHomework("1", $klas_ll, $leerling_id);
+                  makeDay("1", $klas_ll, $leerling_id);
                 ?>
               </div>
             </div>
@@ -720,8 +729,8 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
               <div class="panel-body highpanel" id="tabel_rooster_dinsdag">
                 <h5>Dinsdag</h5>
                 <?php
-                  getHomework($week, "2", $klas_ll, $leerling_id);
-                  makeoddDay($week, "2", $klas_ll, $leerling_id);
+                  getHomework("2", $klas_ll, $leerling_id);
+                  makeoddDay("2", $klas_ll, $leerling_id);
                   getRemark($leerling_id);
                 ?>
               </div>
@@ -734,8 +743,8 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
               <div class="panel-body highpanel" id="tabel_rooster_woensdag">
                 <h5>Woensdag</h5>
                 <?php
-                 getHomework($week, "3", $klas_ll, $leerling_id);
-                 makeDay($week, "3", $klas_ll, $leerling_id);?>
+                 getHomework("3", $klas_ll, $leerling_id);
+                 makeDay("3", $klas_ll, $leerling_id);?>
 
               </div>
             </div>
@@ -765,8 +774,8 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
               <div class="panel-body highpanel" id="tabel_rooster_donderdag">
                 <h5>Donderdag</h5>
                 <?php
-                 getHomework($week, "4", $klas_ll, $leerling_id);
-                 makeoddDay($week, "4", $klas_ll, $leerling_id);?>
+                 getHomework("4", $klas_ll, $leerling_id);
+                 makeoddDay("4", $klas_ll, $leerling_id);?>
               </div>
             </div>
           </div>
@@ -777,8 +786,8 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
               <div class="panel-body highpanel" id="tabel_rooster_vrijdag">
                 <h5>Vrijdag</h5>
                 <?php
-                getHomework($week, "5", $klas_ll, $leerling_id);
-                makeDay($week, "5", $klas_ll, $leerling_id);?>
+                getHomework("5", $klas_ll, $leerling_id);
+                makeDay("5", $klas_ll, $leerling_id);?>
               </div>
             </div>
           </div>
@@ -852,7 +861,7 @@ function haalDagroosterOp($week,$dag,$blok,$klas_ll,$leerling_id) {
                                            // controle op dag 0=ma 1 di
                                            // en op klas
                                           $td_array="";
-                                           // $week=$_SESSION['weeknummer']+1;
+                                          $week=$_SESSION['weeknummer']+1;
                                            // $klas_ll=$_SESSION['klas'];
 
 
