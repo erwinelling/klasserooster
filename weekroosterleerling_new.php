@@ -4,7 +4,7 @@
   //TODO: html apart laten outputten
   //TODO: ordenen
   //TODO: functions opruimen
-
+  //TODO: css netjes in files
 
   //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven.
   //TODO: Misschien sessie variabelen eruit
@@ -816,7 +816,11 @@
 <!DOCTYPE html>
 <html lang="nl"><head>
   <style>
-    .center{
+  <?php
+    if($_GET['output']!="clean") {
+      // DO NOT SHOW IN CLEAN VERSION FOR PDF
+  ?>
+    .center {
       position: absolute;
       height: 20px;
       width: 50px;
@@ -824,43 +828,79 @@
       top:calc(50% - 50px/2);
       left:calc(50% - 50px/2);
     }
+    .highpanel {
+      height: 850px;
+    }
+  <? } else { ?>
+    .page-break-after {
+      page-break-after: always;
+    }
+    body {
+      background-color: #fff !important;
+      padding: 10px 10px 10px 10px;
+    }
+    /* KAN MOOIER VOOR PRINT MEDIA ALLEEN? OF BREEDTE INSTELLEN OID */
+    .col-lg-12{width:99%; float:left;}
+    .col-lg-4 {width:33%; float:left;}
+  <? } ?>
   </style>
   <?php
-  include("header_new.inc");
+    if($_GET['output']!="clean") { // DO NOT SHOW IN CLEAN VERSION FOR PDF
+      include("header_new.inc");
+    } else {
+      echo '<link href="css/bootstrap.css" rel="stylesheet">';
+    }
   ?>
 </head>
 <body>
+  <?php
+    if($_GET['output']!="clean") { // DO NOT SHOW IN CLEAN VERSION FOR PDF
+  ?>
   <div class="center" id='loadingimg'><img src="img/pdfloader.gif"></div>
+  <? } ?>
+
   <div id="wrapper">
     <?php
-      include ("menutop.inc");
-      //TODO: Er zit een non-https verwijzing in deze include. Is niet secure.
-      include ("menu.inc");
+      if($_GET['output']!="clean") { // DO NOT SHOW IN CLEAN VERSION FOR PDF
+        include ("menutop.inc");
+        //TODO: Er zit een non-https verwijzing in deze include. Is niet secure.
+        include ("menu.inc");
+      }
     ?>
 
     <!-- Page Content -->
     <div id="page-wrapper">
       <div class="row">
         <div class="col-lg-12">
-          <ol class="breadcrumb text-xs">
-            <li><a href="#">Home</a></li>
-            <li class="active">Medewerker</li>
-            <li class="active">Weekrooster</li>
-          </ol>
+          <? if($_GET['output']!="clean") {
+             // DO NOT SHOW IN CLEAN VERSION FOR PDF
+          ?>
+            <ol class="breadcrumb text-xs">
+              <li><a href="#">Home</a></li>
+              <li class="active">Medewerker</li>
+              <li class="active">Weekrooster</li>
+            </ol>
+          <? } ?>
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              <div class="pull-right">
-                <div class="btn-group">
-                  <form method="post" action="test_tmp.php" id="leerlingentabel" ajax="true">
-                    <input type=text id='test' hidden>
-                    <input type=text id='test_restweek' hidden>
-                    <button type="submit" class="btn btn-default dropdown-toggle">
-                      <i class="fa fa-file-pdf-o"></i>
-                    </button>
-                  </form>
+
+              <? if($_GET['output']!="clean") {
+                 // DO NOT SHOW IN CLEAN VERSION FOR PDF
+              ?>
+                <div class="pull-right">
+                  <div class="btn-group">
+                    <form method="post" action="test_tmp.php" id="leerlingentabel" ajax="true">
+                      <input type=text id='test' hidden>
+                      <input type=text id='test_restweek' hidden>
+
+                      <button type="submit" class="btn btn-default dropdown-toggle">
+                        <i class="fa fa-file-pdf-o"></i>
+                      </button>
+                    </form>
+                  </div>
                 </div>
-              </div>
+              <? } ?>
               <h4 class="margin-none">
                 <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($_SESSION['leerlingID']);?> </span>, week <?php if ($_SESSION['volgende_weeknummer']=="17"){echo $_SESSION['volgende_weeknummer']+2;}else {echo $_SESSION['volgende_weeknummer'];}?>
               </h4>
@@ -874,7 +914,7 @@
         <!--begin maandag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body" style="height:850px" id="tabel_rooster_maandag">
+            <div class="panel-body highpanel" id="tabel_rooster_maandag">
               <h5>Maandag</h5>
               <?php
                 getHomework($_SESSION['volgende_weeknummer'],"1");
@@ -887,7 +927,7 @@
         <!--begin dinsdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body" style="height:850px" id="tabel_rooster_dinsdag">
+            <div class="panel-body highpanel" id="tabel_rooster_dinsdag">
               <h5>Dinsdag</h5>
               <?php
                 getHomework($_SESSION['volgende_weeknummer'],"2");
@@ -901,7 +941,7 @@
         <!--begin woensdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body" style="height:850px" id="tabel_rooster_woensdag">
+            <div class="panel-body highpanel" id="tabel_rooster_woensdag">
               <h5>Woensdag</h5>
               <?php
                 getHomework($_SESSION['volgende_weeknummer'],"3");
@@ -914,7 +954,7 @@
         <!--begin donderdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body" style="height:850px" id="tabel_rooster_donderdag">
+            <div class="panel-body highpanel" id="tabel_rooster_donderdag">
               <h5>Donderdag</h5>
               <?php
                 getHomework($_SESSION['volgende_weeknummer'],"4");
@@ -927,7 +967,7 @@
         <!--begin vrijdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body" style="height:850px" id="tabel_rooster_vrijdag">
+            <div class="panel-body highpanel" id="tabel_rooster_vrijdag">
               <h5>Vrijdag</h5>
               <?php
                 getHomework($_SESSION['volgende_weeknummer'],"5");
@@ -939,7 +979,7 @@
         <!--eind vrijdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body" style="height:850px" id="tabel_rooster_werk">
+            <div class="panel-body highpanel" id="tabel_rooster_werk">
               <table class="table table-striped table-bordered table-hover" >
                 <thead>
                   <tr>
@@ -1061,7 +1101,9 @@
       </div>
     </div><!-- /#page-wrapper -->
   </div><!-- /#wrapper -->
-
+  <? if($_GET['output']!="clean") {
+     // DO NOT SHOW IN CLEAN VERSION FOR PDF
+  ?>
   <script>
     $(document).ready(function (){
       $("#loadingimg").hide();
@@ -1111,5 +1153,6 @@
     });
   </script>
   <?php include ("footer.inc") ;?>
+  <? } ?>
 </body>
 </html>
