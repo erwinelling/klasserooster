@@ -1,14 +1,23 @@
 <?php error_reporting(0);session_start();?>
 <?
-  /* DEFINE GET/SESSION VARIABLES */
-  //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven.
+  //TODO: leerlingen forloop fixen
+  //TODO: html apart laten outputten
+  //TODO: ordenen
 
+
+  //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven.
+  //TODO: Misschien sessie variabelen eruit
+  //TODO: klasses maken?
+  //TODO: andere database tussenlaag?
+  //TODO: templatetaal gebruiken?
+
+  /* DEFINE GET/SESSION VARIABLES */
   //e.g. ll=261
   $leerling_id=$_GET['ll'];
   $_SESSION["leerlingID"]=$leerling_id;
 
   if(isset($_GET['docent'])) {
-    // Don't use existing session var, but get var
+    // Don't use existing session var, but use GET var
     // e.g. docent=Administrator
     // e.g. docent=Laura
     $docent=$_GET['docent'];
@@ -17,14 +26,14 @@
   }
 
   if(isset($_GET['klas'])) {
-    // Overwrite existing session var with get var
+    // Overwrite existing session var with GET var
     // e.g. klas=1
     $_SESSION['klas']=$_GET['klas'];
     $klas_ll=$_SESSION['klas'];
   }
 
   if(isset($_GET['sCode'])) {
-    // Overwrite existing session var with get var
+    // Don't use existing session var, but use GET var
     // e.g. sCode=JBR
     //TODO: Volgens mij gaat hier iets mee mis. Met Bram checken hoe dit zit!
     //TODO: Zorgen dat ik goed kan vergelijken met normale code!
@@ -33,6 +42,7 @@
   }
 
   if(isset($_GET['week'])) {
+    // Overwrite existing session var with GET var
     $_SESSION['volgende_weeknummer']=intval($_GET['week']);
   } else {
     $weeknummer=intval(date('W'));
@@ -51,7 +61,7 @@
 
   function haalAlgemeen($tijd)
   {
-      $sql="select * from algemene_activiteiten WHERE wanneer='".$tijd."'";
+    $sql="select * from algemene_activiteiten WHERE wanneer='".$tijd."'";
       //echo $sql2;
       while($row = mysql_fetch_array(mysql_query($sql)) )
          {
@@ -813,181 +823,129 @@
       left:calc(50% - 50px/2);
     }
   </style>
-  <!--<script type="text/javascript" src="jspdf.debug.js"></script>-->
   <?php
   include("header_new.inc");
   ConnectSQLDatabase();
   ?>
-    </head>
-
-    <body>
+</head>
+<body>
   <div class="center" id='loadingimg'><img src="img/pdfloader.gif"></div>
-        <div id="wrapper">
-        <?php
-          include ("menutop.inc");
-          //TODO: Er zit een non-https verwijzing in deze include. Is niet secure.
-        ?>
- 		 <?php include ("menu.inc") ;?>
+  <div id="wrapper">
+    <?php
+      include ("menutop.inc");
+      //TODO: Er zit een non-https verwijzing in deze include. Is niet secure.
+      include ("menu.inc");
+    ?>
 
-            <!-- Page Content -->
-            <div id="page-wrapper">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <ol class="breadcrumb text-xs">
-                            <li><a href="#">Home</a></li>
-                            <li class="active">Medewerker</li>
-                               <li class="active">Weekrooster</li>
-                        </ol>
+    <!-- Page Content -->
+    <div id="page-wrapper">
+      <div class="row">
+        <div class="col-lg-12">
+          <ol class="breadcrumb text-xs">
+            <li><a href="#">Home</a></li>
+            <li class="active">Medewerker</li>
+            <li class="active">Weekrooster</li>
+          </ol>
 
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-
-                        <div class="pull-right">
-
-
-                                      <div class="btn-group">
-                                      <form method="post" action="test_tmp.php" id="leerlingentabel" ajax="true">
-                                      <input type=text id='test' hidden>
-                                      <input type=text id='test_restweek' hidden>
-
-                                           <button type="submit" class="btn btn-default dropdown-toggle">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </button>
-                                      </form>
-
-
-
-
-                                    </div>
-
-
-                                </div>
-                                 <h4 class="margin-none">
-                                    <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($_SESSION['leerlingID']);?> </span>, week <?php if ($_SESSION['volgende_weeknummer']=="17"){echo $_SESSION['volgende_weeknummer']+2;}else {echo $_SESSION['volgende_weeknummer'];}?>
-                                </h4>
-                               <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-                    <!-- /.col-lg-12 -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <div class="pull-right">
+                <div class="btn-group">
+                  <form method="post" action="test_tmp.php" id="leerlingentabel" ajax="true">
+                    <input type=text id='test' hidden>
+                    <input type=text id='test_restweek' hidden>
+                    <button type="submit" class="btn btn-default dropdown-toggle">
+                      <i class="fa fa-file-pdf-o"></i>
+                    </button>
+                  </form>
                 </div>
-                <!-- /.row -->
-<div class="row" id="tabel_rooster" name="">
+              </div>
+              <h4 class="margin-none">
+                <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($_SESSION['leerlingID']);?> </span>, week <?php if ($_SESSION['volgende_weeknummer']=="17"){echo $_SESSION['volgende_weeknummer']+2;}else {echo $_SESSION['volgende_weeknummer'];}?>
+              </h4>
+              <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
+            </div>
+          </div>
+        </div><!-- /.col-lg-12 -->
+      </div><!-- /.row -->
 
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height:850px" id="tabel_rooster_maandag">
-                                <h5>Maandag</h5>
-
-                                           <?php
-                                                   getHomework($_SESSION['volgende_weeknummer'],"1");
-
-
-
-
-
-                               makeDay($_SESSION['volgende_weeknummer'],"1");?>
-
-                            </div>
-                        </div>
-                    </div>
-<!--     einde maandag-->
-
-<!--begin dinsdag-->
-  <div class="col-lg-4">
-                       <div class="panel panel-default">
-                            <div class="panel-body" style="height:850px" id="tabel_rooster_dinsdag">
-                                <h5>Dinsdag</h5>
-
-                                           <?php
-                                                   getHomework($_SESSION['volgende_weeknummer'],"2");
-
-
-
-
-
-                               makeoddDay($_SESSION['volgende_weeknummer'],"2");
-                               getRemark($leerling_id);
-                               ?>
-
-                            </div>
-                        </div>
-                    </div>
-
-<!--eind dinsdag-->
-<!--begin woensdag-->
-  <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height:850px" id="tabel_rooster_woensdag">
-                                <h5>Woensdag</h5>
-
-                                           <?php
-                                                   getHomework($_SESSION['volgende_weeknummer'],"3");
-
-
-
-
-
-                               makeDay($_SESSION['volgende_weeknummer'],"3");?>
-
-                            </div>
-                        </div>
-                    </div>
-<!--eind woensdag-->
-<!--begin donderdag-->
-  <div class="col-lg-4">
-                         <div class="panel panel-default">
-                            <div class="panel-body" style="height:850px" id="tabel_rooster_donderdag">
-                                <h5>Donderdag</h5>
-
-                                           <?php
-                                                   getHomework($_SESSION['volgende_weeknummer'],"4");
-
-
-
-
-
-                               makeoddDay($_SESSION['volgende_weeknummer'],"4");?>
-
-                            </div>
-                        </div>
-                    </div>
-<!--eind donderdag-->
-<!--begin vrijdag-->
-<div class="col-lg-4">
-                           <div class="panel panel-default">
-                            <div class="panel-body" style="height:850px" id="tabel_rooster_vrijdag">
-                                <h5>Vrijdag</h5>
-
-                                           <?php
-                                                   getHomework($_SESSION['volgende_weeknummer'],"5");
-
-
-
-
-
-                               makeDay($_SESSION['volgende_weeknummer'],"5");?>
-
-                            </div>
-                        </div>
-                    </div>
-<!--eind vrijdag-->
-  <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="height:850px" id="tabel_rooster_werk">
-
-                                <table class="table table-striped table-bordered table-hover" >
-                                        <thead>
-                                            <tr>
-                                                <th colspan='3'>Weekopdrachten</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+      <div class="row" id="tabel_rooster" name="">
+        <!--begin maandag-->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body" style="height:850px" id="tabel_rooster_maandag">
+              <h5>Maandag</h5>
+              <?php
+                getHomework($_SESSION['volgende_weeknummer'],"1");
+                makeDay($_SESSION['volgende_weeknummer'],"1");
+              ?>
+            </div>
+          </div>
+        </div>
+        <!--einde maandag-->
+        <!--begin dinsdag-->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body" style="height:850px" id="tabel_rooster_dinsdag">
+              <h5>Dinsdag</h5>
+              <?php
+                getHomework($_SESSION['volgende_weeknummer'],"2");
+                makeoddDay($_SESSION['volgende_weeknummer'],"2");
+                getRemark($leerling_id);
+              ?>
+            </div>
+          </div>
+        </div>
+        <!--einde dinsdag-->
+        <!--begin woensdag-->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body" style="height:850px" id="tabel_rooster_woensdag">
+              <h5>Woensdag</h5>
+              <?php
+                getHomework($_SESSION['volgende_weeknummer'],"3");
+                makeDay($_SESSION['volgende_weeknummer'],"3");
+              ?>
+            </div>
+          </div>
+        </div>
+        <!--eind woensdag-->
+        <!--begin donderdag-->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body" style="height:850px" id="tabel_rooster_donderdag">
+              <h5>Donderdag</h5>
+              <?php
+                getHomework($_SESSION['volgende_weeknummer'],"4");
+                makeoddDay($_SESSION['volgende_weeknummer'],"4");
+              ?>
+            </div>
+          </div>
+        </div>
+        <!--eind donderdag-->
+        <!--begin vrijdag-->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body" style="height:850px" id="tabel_rooster_vrijdag">
+              <h5>Vrijdag</h5>
+              <?php
+                getHomework($_SESSION['volgende_weeknummer'],"5");
+                makeDay($_SESSION['volgende_weeknummer'],"5");
+              ?>
+            </div>
+          </div>
+        </div>
+        <!--eind vrijdag-->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body" style="height:850px" id="tabel_rooster_werk">
+              <table class="table table-striped table-bordered table-hover" >
+                <thead>
+                  <tr>
+                    <th colspan='3'>Weekopdrachten</th>
+                  </tr>
+                </thead>
+                <tbody>
 
                                            <?php
                                            // Bekijk naar rijen in het rooster
@@ -1037,21 +995,15 @@
                                                 echo "<tr><td colspan=3>Geen werk voor deze week</td></tr>";
                                             }
                                             ?>
-
-                                        </tbody>
-                                </table>
-
-
-
-                                <table class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th colspan='3'>Extra werk</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
+                </tbody>
+              </table>
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th colspan='3'>Extra werk</th>
+                  </tr>
+                </thead>
+                <tbody>
                                           <?php
                                            // Bekijk naar rijen in het rooster
                                            // controle op dag 0=ma 1 di
@@ -1100,117 +1052,63 @@
                                                 echo "<tr><td colspan=2>Geen werk voor deze week</td></tr>";
                                             }
                                             ?>
-
-                                        </tbody>
-                                </table>
-
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- /.col-lg-12 -->
-                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-<!--            // rooster voor pdf-->
-
-<!--            // einde rooster pdf-->
+                </tbody>
+              </table>
             </div>
-            <!-- /#page-wrapper -->
+          </div>
+        </div><!-- /.col-lg-12 -->
+      </div>
+    </div><!-- /#page-wrapper -->
+  </div><!-- /#wrapper -->
 
-        </div>
-        <!-- /#wrapper -->
-
-<script>
-
-
-
-  $(document).ready(function (){
+  <script>
+    $(document).ready(function (){
       $("#loadingimg").hide();
+      var leerling_naam=$("#leerlingnaam").html();
+      var leerling_opmerking=$("#opmerking").html();
+      var data_maandag=$("#tabel_rooster_maandag").html();
+      var data_dinsdag=$("#tabel_rooster_dinsdag").html();
+      var data_woensdag=$("#tabel_rooster_woensdag").html();
 
+      var data_donderdag=$("#tabel_rooster_donderdag").html();
+      var data_vrijdag=$("#tabel_rooster_vrijdag").html();
+      var data_werk=$("#tabel_rooster_werk").html();
 
-
-     var leerling_naam=$("#leerlingnaam").html();
-          var leerling_opmerking=$("#opmerking").html();
-       var data_maandag=$("#tabel_rooster_maandag").html();
-        var data_dinsdag=$("#tabel_rooster_dinsdag").html();
-         var data_woensdag=$("#tabel_rooster_woensdag").html();
-
-       var data_donderdag=$("#tabel_rooster_donderdag").html();
-        var data_vrijdag=$("#tabel_rooster_vrijdag").html();
-         var data_werk=$("#tabel_rooster_werk").html();
-
-         var data='<table style=\'background-color:white;\'><tr style=\'background-color:white;\'><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_maandag+'</td><td style=\'width:10px\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_dinsdag+'Werkrooster van werker : '+leerling_naam+ ' (pagina 1/2)</td><td style=\'background-color:white;width:10px\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_woensdag+'</td></tr></table>';
-        //alert(data);
-         $("#test").val(data);
-        var data_restweek='<table style=\'background-color:white\'><tr style=\'background-color:white;\'><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_donderdag+'Werkrooster van werker : '+leerling_naam+ ' (pagina 2/2)</td><td style=\'background-color:white;width:10px;vertical-align: text-top;\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_vrijdag+'</td><td style=\'background-color:white;width:10px\'></td><td style=\'background-color:white;vertical-align:top;width:325px;vertical-align: text-top;\'>'+data_werk+'</td></tr></table>';
-        //alert(data);
-         $("#test_restweek").val(data_restweek);
-
-    $('form').submit(function(e) {
-
-
-
+      var data='<table style=\'background-color:white;\'><tr style=\'background-color:white;\'><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_maandag+'</td><td style=\'width:10px\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_dinsdag+'Werkrooster van werker : '+leerling_naam+ ' (pagina 1/2)</td><td style=\'background-color:white;width:10px\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_woensdag+'</td></tr></table>';
+      //alert(data);
+      $("#test").val(data);
+      var data_restweek='<table style=\'background-color:white\'><tr style=\'background-color:white;\'><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_donderdag+'Werkrooster van werker : '+leerling_naam+ ' (pagina 2/2)</td><td style=\'background-color:white;width:10px;vertical-align: text-top;\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_vrijdag+'</td><td style=\'background-color:white;width:10px\'></td><td style=\'background-color:white;vertical-align:top;width:325px;vertical-align: text-top;\'>'+data_werk+'</td></tr></table>';
+      //alert(data);
+      $("#test_restweek").val(data_restweek);
+      $('form').submit(function(e) {
         e.preventDefault();
-
-
         $("#loadingimg").show();
-       window.location.href = "http://keesboeke.guifiontwikkelt.nl/dompdf";
-
-
+        window.location.href = "http://keesboeke.guifiontwikkelt.nl/dompdf";
+      });
     });
-
-
-
-
-
-});
-
-
-
-
-
-// wegschrijven van gegevens als de pagina is geladen.
-$(document).ready(function (){
+    // wegschrijven van gegevens als de pagina is geladen.
+    $(document).ready(function (){
       $("#loadingimg").hide();
+      var form_data = $("#test").val();
+      var form_data_rest= $("#test_restweek").val();
+      var form_url = "test_tmp.php";
+      var form_method = "POST";
+      //console.log($("#test").val());
+      // $("#loadingimg").show();
 
-
-        var form_data = $("#test").val();
-        var form_data_rest= $("#test_restweek").val();
-         var form_url = "test_tmp.php";
-        var form_method = "POST";
-        //console.log($("#test").val());
-       // $("#loadingimg").show();
-
-        $.ajax({
-            url: form_url,
-            type: form_method,
-            data: {q:form_data,r:form_data_rest},
-            cache: false,
-            success: function(returnhtml){
-               // $("#output").html(returnhtml);
-                //window.location.href = "http://keesboeke.guifiontwikkelt.nl/dompdf";
-
-
-            }
-        });
+      $.ajax({
+        url: form_url,
+        type: form_method,
+        data: {q:form_data,r:form_data_rest},
+        cache: false,
+        success: function(returnhtml){
+        // $("#output").html(returnhtml);
+        //window.location.href = "http://keesboeke.guifiontwikkelt.nl/dompdf";
+        }
+      });
 
     });
-        </script>
-</script>
-      <?php include ("footer.inc") ;?>
-
-    </body>
-
+  </script>
+  <?php include ("footer.inc") ;?>
+</body>
 </html>
