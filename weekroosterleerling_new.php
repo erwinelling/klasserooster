@@ -1,6 +1,7 @@
 <?php error_reporting(0);session_start();?>
 <?
   // SET VARIABLES
+  //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven.
 
   //e.g. ll=261
   $leerling_id=$_GET['ll'];
@@ -10,11 +11,10 @@
     // Don't use existing session var, but get var
     // e.g. docent=Administrator
     // e.g. docent=Laura
-    $ingelogde_docent=$_GET['docent'];
+    $docent=$_GET['docent'];
   } else {
-    $ingelogde_docent=$_SESSION["sUsername"];
+    $docent=$_SESSION["sUsername"];
   }
-  $docent=$ingelogde_docent;
 
   if(isset($_GET['klas'])) {
     // Overwrite existing session var with get var
@@ -32,11 +32,12 @@
     $_SESSION['sCode']=$_GET['sCode'];
   }
 
-  $weeknummer=intval(date('W'));
-  // $week=intval(date('W'))+1;
-  $_SESSION['volgende_weeknummer']=$weeknummer+1;
-  // TODO: Check difference between $weeknummer and $week
-  // TODO: All those weeks are crazy. Check if I used this everywhere!
+  if(isset($_GET['week'])) {
+    $_SESSION['volgende_weeknummer']=intval($_GET['week']);
+  } else {
+    $weeknummer=intval(date('W'));
+    $_SESSION['volgende_weeknummer']=$weeknummer+1;
+  }
 ?>
 
 
