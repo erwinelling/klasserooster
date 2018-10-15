@@ -1,15 +1,19 @@
 <?php error_reporting(0);session_start();?>
 <?
   //TODO: controleren of het klopt met recente week pdf en met juiste variabelen
+  //TODO: checken of het dan op 1A4 past, misschien wat kleiner maken
+  //TODO: PDF maker afmaken
+  //TODO: cronjob maken + script met juiste variabelen (ll in klas bij scode)
+
+  /* IDEAS */
   //TODO: verder ordenen
   //TODO: functions opruimen
   //TODO: css netjes in files
-
-  //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven?
-  //TODO: Alle sessie variabelen eruit?
-  //TODO: klasses maken?
-  //TODO: andere database tussenlaag?
-  //TODO: templatetaal gebruiken?
+  //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven
+  //TODO: Alle sessie variabelen eruit
+  //TODO: klasses maken
+  //TODO: andere database tussenlaag
+  //TODO: templatetaal gebruiken
 
   /* DEFINE GET/SESSION VARIABLES */
   //e.g. ll[]=261 or ll[]=261
@@ -836,7 +840,10 @@
     }
   <? } else { ?>
     .page-break-after {
-      page-break-after: always;
+      /* page-break-after: always; */
+    }
+    .page-break-after:last-child {
+      /* page-break-after: avoid; */
     }
     body {
       background-color: #fff !important;
@@ -912,7 +919,11 @@
               <h4 class="margin-none">
                 <i class="fa fa-calendar"></i> Weektaak <span class="leerlingnaam"><?php echo getStudentName($leerling_id);?></span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?>
               </h4>
+              <? if($_GET['output']!="clean") {
+                 // DO NOT SHOW IN CLEAN VERSION FOR PDF
+              ?>
               <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
+            <? } ?>
             </div>
           </div>
         </div><!-- /.col-lg-12 -->
@@ -970,7 +981,11 @@
                 <h4 class="margin-none">
                   <i class="fa fa-calendar"></i> Weektaak <span class="leerlingnaam"><?php echo getStudentName($leerling_id);?></span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?> (pagina 2)
                 </h4>
+                <? if($_GET['output']!="clean") {
+                   // DO NOT SHOW IN CLEAN VERSION FOR PDF
+                ?>
                 <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
+                <? } ?>
               </div>
             </div>
           </div>
