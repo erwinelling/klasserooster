@@ -20,6 +20,7 @@
     // Overwrite existing session var with get var
     // e.g. klas=1
     $_SESSION['klas']=$_GET['klas'];
+    $klas_ll=$_SESSION['klas'];
   }
 
   if(isset($_GET['sCode'])) {
@@ -31,9 +32,11 @@
     $_SESSION['sCode']=$_GET['sCode'];
   }
 
-  $_SESSION['weeknummer']=  intval(date('W'));
-  $week=intval(date('W'))+1;
+  $weeknummer=intval(date('W'));
+  // $week=intval(date('W'))+1;
+  $_SESSION['volgende_weeknummer']=$weeknummer+1;
   // TODO: Check difference between $weeknummer and $week
+  // TODO: All those weeks are crazy. Check if I used this everywhere!
 ?>
 
 
@@ -144,7 +147,7 @@ function getStudentName($id)
                    }
 
 
-                   function   makeDay($week,$dag){
+                   function makeDay($week,$dag){
      echo "<table class=\"table table-striped table-bordered table-hover\">
                                         <thead>
                                             <tr>
@@ -376,10 +379,10 @@ if ($_GET['test']!=''){echo   $sSql; $_SESSION = array();}
                                             }
 
 
-function getAdditionalCourse($blok_rooster,$blok_deel_rooster,$docent,$dag)
+function getAdditionalCourse($blok_rooster,$blok_deel_rooster,$docent,$week,$dag)
                 {
 
-        $week=$_SESSION['weeknummer']+1;
+        // $week=$_SESSION['weeknummer']+1;
 
 
 
@@ -782,7 +785,7 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
 
                     if ( $wat=="" && $extrataak[1]=="")
                        {
-                           $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$dag);
+                           $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$_SESSION['volgende_weeknummer'],$dag);
                           //echo "dsf";
                          // exit();
                            // als er geen informatie wordt gevonden dan alleen blok laten zien.
@@ -867,7 +870,7 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
 
                                 </div>
                                  <h4 class="margin-none">
-                                    <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($_SESSION['leerlingID']);?> </span>, week <?php if ($week=="17"){echo $week+2;}else {echo $week;}?>
+                                    <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($_SESSION['leerlingID']);?> </span>, week <?php if ($_SESSION['volgende_weeknummer']=="17"){echo $_SESSION['volgende_weeknummer']+2;}else {echo $_SESSION['volgende_weeknummer'];}?>
                                 </h4>
                                <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
                             </div>
@@ -888,13 +891,13 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                 <h5>Maandag</h5>
 
                                            <?php
-                                                   getHomework($week,"1");
+                                                   getHomework($_SESSION['volgende_weeknummer'],"1");
 
 
 
 
 
-                               makeDay($week,"1");?>
+                               makeDay($_SESSION['volgende_weeknummer'],"1");?>
 
                             </div>
                         </div>
@@ -908,13 +911,13 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                 <h5>Dinsdag</h5>
 
                                            <?php
-                                                   getHomework($week,"2");
+                                                   getHomework($_SESSION['volgende_weeknummer'],"2");
 
 
 
 
 
-                               makeoddDay($week,"2");
+                               makeoddDay($_SESSION['volgende_weeknummer'],"2");
                                getRemark($leerling_id);
                                ?>
 
@@ -930,13 +933,13 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                 <h5>Woensdag</h5>
 
                                            <?php
-                                                   getHomework($week,"3");
+                                                   getHomework($_SESSION['volgende_weeknummer'],"3");
 
 
 
 
 
-                               makeDay($week,"3");?>
+                               makeDay($_SESSION['volgende_weeknummer'],"3");?>
 
                             </div>
                         </div>
@@ -949,13 +952,13 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                 <h5>Donderdag</h5>
 
                                            <?php
-                                                   getHomework($week,"4");
+                                                   getHomework($_SESSION['volgende_weeknummer'],"4");
 
 
 
 
 
-                               makeoddDay($week,"4");?>
+                               makeoddDay($_SESSION['volgende_weeknummer'],"4");?>
 
                             </div>
                         </div>
@@ -968,13 +971,13 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                 <h5>Vrijdag</h5>
 
                                            <?php
-                                                   getHomework($week,"5");
+                                                   getHomework($_SESSION['volgende_weeknummer'],"5");
 
 
 
 
 
-                               makeDay($week,"5");?>
+                               makeDay($_SESSION['volgende_weeknummer'],"5");?>
 
                             </div>
                         </div>
@@ -998,15 +1001,15 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                            // controle op dag 0=ma 1 di
                                            // en op klas
                                            $td_array="";
-                                           $week=$_SESSION['weeknummer']+1;
-                                           $klas_ll=$_SESSION['klas'];
+                                           // $week=$_SESSION['weeknummer']+1;
+                                           // $klas_ll=$_SESSION['klas'];
 
 
                                                     $sSqle = "
                                                 SELECT
                                                     *
                                                 FROM
-                                                    task WHERE iWeek=".$week." AND klas='".$klas_ll."' AND (iCourse='36')"
+                                                    task WHERE iWeek=".$_SESSION['volgende_weeknummer']." AND klas='".$klas_ll."' AND (iCourse='36')"
 
                                                         ;
                                                // echo "1 ".$sSqle."<br>";
@@ -1061,15 +1064,15 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
                                            // controle op dag 0=ma 1 di
                                            // en op klas
                                           $td_array="";
-                                           $week=$_SESSION['weeknummer']+1;
-                                           $klas_ll=$_SESSION['klas'];
+                                           // $week=$_SESSION['weeknummer']+1;
+                                           // $klas_ll=$_SESSION['klas'];
 
 
                                                     $sSqle = "
                                                 SELECT
                                                     *
                                                 FROM
-                                                    task WHERE iWeek=".$week." AND klas='".$klas_ll."' AND (iCourse='38')"
+                                                    task WHERE iWeek=".$_SESSION['volgende_weeknummer']." AND klas='".$klas_ll."' AND (iCourse='38')"
 
                                                         ;
                                                 //echo "1 ".$sSqle."<br>";
