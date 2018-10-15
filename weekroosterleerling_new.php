@@ -910,7 +910,7 @@
                 </div>
               <? } ?>
               <h4 class="margin-none">
-                <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($leerling_id);?> </span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?>
+                <i class="fa fa-calendar"></i> Weektaak <span class="leerlingnaam"><?php echo getStudentName($leerling_id);?> </span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?>
               </h4>
               <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
             </div>
@@ -918,11 +918,11 @@
         </div><!-- /.col-lg-12 -->
       </div><!-- /.row -->
 
-      <div class="row" id="tabel_rooster">
+      <div class="row tabel_rooster">
         <!--begin maandag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body highpanel" id="tabel_rooster_maandag">
+            <div class="panel-body highpanel tabel_rooster_maandag">
               <h5>Maandag</h5>
               <?php
                 getHomework($leerling_id,$weeknummer,"1");
@@ -935,7 +935,7 @@
         <!--begin dinsdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body highpanel" id="tabel_rooster_dinsdag">
+            <div class="panel-body highpanel tabel_rooster_dinsdag">
               <h5>Dinsdag</h5>
               <?php
                 getHomework($leerling_id,$weeknummer,"2");
@@ -949,7 +949,7 @@
         <!--begin woensdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body highpanel" id="tabel_rooster_woensdag">
+            <div class="panel-body highpanel tabel_rooster_woensdag">
               <h5>Woensdag</h5>
               <?php
                 getHomework($leerling_id,$weeknummer,"3");
@@ -962,7 +962,7 @@
         <!--begin donderdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body highpanel" id="tabel_rooster_donderdag">
+            <div class="panel-body highpanel tabel_rooster_donderdag">
               <h5>Donderdag</h5>
               <?php
                 getHomework($leerling_id,$weeknummer,"4");
@@ -975,7 +975,7 @@
         <!--begin vrijdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body highpanel" id="tabel_rooster_vrijdag">
+            <div class="panel-body highpanel tabel_rooster_vrijdag">
               <h5>Vrijdag</h5>
               <?php
                 getHomework($leerling_id,$weeknummer,"5");
@@ -987,7 +987,7 @@
         <!--eind vrijdag-->
         <div class="col-lg-4">
           <div class="panel panel-default">
-            <div class="panel-body highpanel" id="tabel_rooster_werk">
+            <div class="panel-body highpanel tabel_rooster_werk">
               <table class="table table-striped table-bordered table-hover" >
                 <thead>
                   <tr>
@@ -1118,15 +1118,16 @@
   <script>
     $(document).ready(function (){
       $("#loadingimg").hide();
-      var leerling_naam=$("#leerlingnaam").html();
+      var leerling_naam=$(".leerlingnaam:first").html();
       var leerling_opmerking=$("#opmerking").html();
-      var data_maandag=$("#tabel_rooster_maandag").html();
-      var data_dinsdag=$("#tabel_rooster_dinsdag").html();
-      var data_woensdag=$("#tabel_rooster_woensdag").html();
+      //TODO: die opmerking id bestaat niet!
+      var data_maandag=$(".tabel_rooster_maandag:first").html();
+      var data_dinsdag=$(".tabel_rooster_dinsdag:first").html();
+      var data_woensdag=$(".tabel_rooster_woensdag:first").html();
 
-      var data_donderdag=$("#tabel_rooster_donderdag").html();
-      var data_vrijdag=$("#tabel_rooster_vrijdag").html();
-      var data_werk=$("#tabel_rooster_werk").html();
+      var data_donderdag=$(".tabel_rooster_donderdag:first").html();
+      var data_vrijdag=$(".tabel_rooster_vrijdag:first").html();
+      var data_werk=$(".tabel_rooster_werk:first").html();
 
       var data='<table style=\'background-color:white;\'><tr style=\'background-color:white;\'><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_maandag+'</td><td style=\'width:10px\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_dinsdag+'Werkrooster van werker : '+leerling_naam+ ' (pagina 1/2)</td><td style=\'background-color:white;width:10px\'></td><td style=\'background-color:white;width:325px;vertical-align: text-top;\'>'+data_woensdag+'</td></tr></table>';
       //alert(data);
