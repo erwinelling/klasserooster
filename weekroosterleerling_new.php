@@ -49,10 +49,10 @@
 
   if(isset($_GET['week'])) {
     // Overwrite existing session var with GET var
-    $_SESSION['volgende_weeknummer']=intval($_GET['week']);
+    $weeknummer=intval($_GET['week']);
   } else {
-    $weeknummer=intval(date('W'));
-    $_SESSION['volgende_weeknummer']=$weeknummer+1;
+    $huidig_weeknummer=intval(date('W'));
+    $weeknummer=$huidig_weeknummer+1;
   }
 
   if ($_GET['test']==1){
@@ -776,7 +776,7 @@
 
                       if ( $wat=="" && $extrataak[1]=="")
                          {
-                             $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$_SESSION['volgende_weeknummer'],$dag);
+                             $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$weeknummer,$dag);
                             //echo "dsf";
                            // exit();
                              // als er geen informatie wordt gevonden dan alleen blok laten zien.
@@ -911,7 +911,7 @@
                 </div>
               <? } ?>
               <h4 class="margin-none">
-                <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($leerling_id);?> </span>, week <?php if ($_SESSION['volgende_weeknummer']=="17"){echo $_SESSION['volgende_weeknummer']+2;}else {echo $_SESSION['volgende_weeknummer'];}?>
+                <i class="fa fa-calendar"></i> Weektaak <span id="leerlingnaam"><?php echo getStudentName($leerling_id);?> </span>, week <?php if ($weeknummer=="17"){echo $weeknummer+2;}else {echo $weeknummer;}?>
               </h4>
               <p class="text-muted text-xs margin-none"><?php echo date("d-m-Y");?></p>
             </div>
@@ -926,8 +926,8 @@
             <div class="panel-body highpanel" id="tabel_rooster_maandag">
               <h5>Maandag</h5>
               <?php
-                getHomework($leerling_id,$_SESSION['volgende_weeknummer'],"1");
-                makeDay($leerling_id,$_SESSION['volgende_weeknummer'],"1");
+                getHomework($leerling_id,$weeknummer,"1");
+                makeDay($leerling_id,$weeknummer,"1");
               ?>
             </div>
           </div>
@@ -939,8 +939,8 @@
             <div class="panel-body highpanel" id="tabel_rooster_dinsdag">
               <h5>Dinsdag</h5>
               <?php
-                getHomework($leerling_id,$_SESSION['volgende_weeknummer'],"2");
-                makeoddDay($leerling_id,$_SESSION['volgende_weeknummer'],"2");
+                getHomework($leerling_id,$weeknummer,"2");
+                makeoddDay($leerling_id,$weeknummer,"2");
                 getRemark($leerling_id);
               ?>
             </div>
@@ -953,8 +953,8 @@
             <div class="panel-body highpanel" id="tabel_rooster_woensdag">
               <h5>Woensdag</h5>
               <?php
-                getHomework($leerling_id,$_SESSION['volgende_weeknummer'],"3");
-                makeDay($leerling_id,$_SESSION['volgende_weeknummer'],"3");
+                getHomework($leerling_id,$weeknummer,"3");
+                makeDay($leerling_id,$weeknummer,"3");
               ?>
             </div>
           </div>
@@ -966,8 +966,8 @@
             <div class="panel-body highpanel" id="tabel_rooster_donderdag">
               <h5>Donderdag</h5>
               <?php
-                getHomework($leerling_id,$_SESSION['volgende_weeknummer'],"4");
-                makeoddDay($leerling_id,$_SESSION['volgende_weeknummer'],"4");
+                getHomework($leerling_id,$weeknummer,"4");
+                makeoddDay($leerling_id,$weeknummer,"4");
               ?>
             </div>
           </div>
@@ -979,8 +979,8 @@
             <div class="panel-body highpanel" id="tabel_rooster_vrijdag">
               <h5>Vrijdag</h5>
               <?php
-                getHomework($leerling_id,$_SESSION['volgende_weeknummer'],"5");
-                makeDay($leerling_id,$_SESSION['volgende_weeknummer'],"5");
+                getHomework($leerling_id,$weeknummer,"5");
+                makeDay($leerling_id,$weeknummer,"5");
               ?>
             </div>
           </div>
@@ -1010,7 +1010,7 @@
                                                 SELECT
                                                     *
                                                 FROM
-                                                    task WHERE iWeek=".$_SESSION['volgende_weeknummer']." AND klas='".$klas_ll."' AND (iCourse='36')"
+                                                    task WHERE iWeek=".$weeknummer." AND klas='".$klas_ll."' AND (iCourse='36')"
 
                                                         ;
                                                // echo "1 ".$sSqle."<br>";
@@ -1067,7 +1067,7 @@
                                                 SELECT
                                                     *
                                                 FROM
-                                                    task WHERE iWeek=".$_SESSION['volgende_weeknummer']." AND klas='".$klas_ll."' AND (iCourse='38')"
+                                                    task WHERE iWeek=".$weeknummer." AND klas='".$klas_ll."' AND (iCourse='38')"
 
                                                         ;
                                                 //echo "1 ".$sSqle."<br>";
