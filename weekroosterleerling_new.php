@@ -3,6 +3,7 @@
   //TODO: leerlingen forloop fixen
   //TODO: html apart laten outputten
   //TODO: ordenen
+  //TODO: functions opruimen
 
 
   //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven.
@@ -58,6 +59,7 @@
 
   /* DEFINE FUNCTIONS */
   include("includes/functions.php");
+  ConnectSQLDatabase();
 
   function haalAlgemeen($tijd)
   {
@@ -825,7 +827,6 @@
   </style>
   <?php
   include("header_new.inc");
-  ConnectSQLDatabase();
   ?>
 </head>
 <body>
