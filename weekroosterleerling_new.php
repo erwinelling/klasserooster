@@ -139,7 +139,7 @@
                      }
 
 
-  function makeDay($ll,$week,$dag){
+  function makeDay($ll,$klas_ll,$week,$dag){
        echo "<table class=\"table table-striped table-bordered table-hover\">
                                           <thead>
                                               <tr>
@@ -211,7 +211,7 @@
    }
 
 
-    function makeoddDay($ll,$week,$dag){
+    function makeoddDay($ll,$klas_ll,$week,$dag){
        echo "<table class=\"table table-striped table-bordered table-hover\">
                                           <thead>
                                               <tr>
@@ -925,8 +925,8 @@
             <div class="panel-body highpanel tabel_rooster_maandag">
               <h5>Maandag</h5>
               <?php
-                getHomework($leerling_id,$weeknummer,"1");
-                makeDay($leerling_id,$weeknummer,"1");
+                getHomework($leerling_id,$klas_ll,$weeknummer,"1");
+                makeDay($leerling_id,$klas_ll,$weeknummer,"1");
               ?>
             </div>
           </div>
@@ -938,8 +938,8 @@
             <div class="panel-body highpanel tabel_rooster_dinsdag">
               <h5>Dinsdag</h5>
               <?php
-                getHomework($leerling_id,$weeknummer,"2");
-                makeoddDay($leerling_id,$weeknummer,"2");
+                 getHomework($leerling_id,$klas_ll,$weeknummer,"2");
+                makeoddDay($leerling_id,$klas_ll,$weeknummer,"2");
                 getRemark($leerling_id);
               ?>
             </div>
@@ -952,8 +952,8 @@
             <div class="panel-body highpanel tabel_rooster_woensdag">
               <h5>Woensdag</h5>
               <?php
-                getHomework($leerling_id,$weeknummer,"3");
-                makeDay($leerling_id,$weeknummer,"3");
+                 getHomework($leerling_id,$klas_ll,$weeknummer,"3");
+                makeDay($leerling_id,$klas_ll,$weeknummer,"3");
               ?>
             </div>
           </div>
@@ -965,8 +965,8 @@
             <div class="panel-body highpanel tabel_rooster_donderdag">
               <h5>Donderdag</h5>
               <?php
-                getHomework($leerling_id,$weeknummer,"4");
-                makeoddDay($leerling_id,$weeknummer,"4");
+                 getHomework($leerling_id,$klas_ll,$weeknummer,"4");
+                makeoddDay($leerling_id,$klas_ll,$weeknummer,"4");
               ?>
             </div>
           </div>
@@ -978,8 +978,8 @@
             <div class="panel-body highpanel tabel_rooster_vrijdag">
               <h5>Vrijdag</h5>
               <?php
-                getHomework($leerling_id,$weeknummer,"5");
-                makeDay($leerling_id,$weeknummer,"5");
+                 getHomework($leerling_id,$klas_ll,$weeknummer,"5");
+                makeDay($leerling_id,$klas_ll,$weeknummer,"5");
               ?>
             </div>
           </div>
