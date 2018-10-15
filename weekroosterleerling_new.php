@@ -1,6 +1,6 @@
 <?php error_reporting(0);session_start();?>
 <?
-  // SET VARIABLES
+  /* DEFINE GET/SESSION VARIABLES */
   //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven.
 
   //e.g. ll=261
@@ -38,208 +38,110 @@
     $weeknummer=intval(date('W'));
     $_SESSION['volgende_weeknummer']=$weeknummer+1;
   }
-?>
 
-
-<!DOCTYPE html>
-
-<html lang="nl">
-
-    <head>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-<style>
-      .center{
-    position: absolute;
-    height: 20px;
-    width: 50px;
-    z-index: 100;
-    top:calc(50% - 50px/2);
-    left:calc(50% - 50px/2);
-
-}
-</style>
-
-<!--<script type="text/javascript" src="jspdf.debug.js"></script>-->
-
-      <?php include ("header.inc") ;
-         include("includes/functions.php");
-
-if ($_GET['test']==1){
+  if ($_GET['test']==1){
     echo "<pre>";
     var_dump($_SESSION);
-         echo "</pre>";
-         echo getNameTeacher($_SESSION['sCode']);
+    echo "</pre>";
+    echo getNameTeacher($_SESSION['sCode']);
+  }
+
+  /* DEFINE FUNCTIONS */
+  include("includes/functions.php");
+
+  function haalAlgemeen($tijd)
+  {
+      $sql="select * from algemene_activiteiten WHERE wanneer='".$tijd."'";
+      //echo $sql2;
+      while($row = mysql_fetch_array(mysql_query($sql)) )
+         {
+        return $row['omschrijving'];
+         }
 
 
-        // $_SESSION['weeknummer']=$_GET['week'];
-}
-      ConnectSQLDatabase();
+  }
 
 
-function haalAlgemeen($tijd)
-{
-    $sql="select * from algemene_activiteiten WHERE wanneer='".$tijd."'";
-    //echo $sql2;
-    while($row = mysql_fetch_array(mysql_query($sql)) )
-       {
-      return $row['omschrijving'];
-       }
+  function getRemark($ll)
+  {
+      $sSql = "SELECT * FROM student_opmerkingen where studentnr='".$ll."'";
+
+             //echo $sSql;
+       $result = mysql_query($sSql);
+
+                                              while($row = mysql_fetch_array($result))
+                                              {
+                                                                      $opmerking= $row['opmerking'];
+                                                   echo "Opmerking: ".$opmerking."<br>";
+                                              }
+
+  }
 
 
-}
+          $split=  getINIT("split_rooster");
+  $tekst_grootte=  getINIT("font_size");
+          // 25 jan split rooster is variabele die wordt gebruikt om het rooster 2-yolanke-A6 te splitsen
+       /* TODO 26 oktober 2015
+        huiswerk wordt bepaald op basis van instructiegroep aangegeven bij TAAL en REKENEN
+        T1 tm T3 => werk B
+        T4 tm T6 => werk C
+        T7 => werk D
+        Rekenen door midden eerste deel is 5 tweede deel is 6
+        */
+
+  //      Vaklessen gym, Atelier en Natuur en Muziek en dans
+  //              In vakles aangeven welke vaklessen er gegeven worden en dan of docent of instructiegroep.
+  //                  Als er een instructiegroep is aangegeven dan volgt de leerling
+  //                  die les conform zijn instructiegroep anders volgt de leerling de docent.
+
+  //      done - stilwerkruimte alleen medewerker ->
+
+  //      TO VO L en S gaan weg en komt terug => waar ze werken. Bij niets invullen zijn ze niet speciaal.
+
+  //              //              Als er in het rooster geen instructieles gepland is en geen vakles voo rdie leerling dan moet deze naar zijn ruimte (van docent).
+  //    Additief vakje toevoegen dag of week taak
+        //
+
+        // 7/8
+       // overzichttaken -> uitsplitsing alleen voor rekenen en taal. zelfstandig en instructie. instructiewerk komt in roosterhok.
+
+  function getStudentName($id)
+  {
+
+    $sql="select * from student where iId='".$id."'";
+  // zoek voro desbetreffende leerling een instructieles in dit veld. Als je niets vindt dan moet er gezocht worden naar een instructieles in het standaard instructierooster
+  //echo $sql;
+       $resultaat=mysql_query($sql);
+                    while($row = mysql_fetch_array($resultaat))
+                     {
+                        $naam=$row['sNaam'];
+                    }
+
+                    return $naam;
+                     }
 
 
-function getRemark($ll)
-{
-    $sSql = "SELECT * FROM student_opmerkingen where studentnr='".$ll."'";
-
-           //echo $sSql;
-     $result = mysql_query($sSql);
-
-                                            while($row = mysql_fetch_array($result))
-                                            {
-                                                                    $opmerking= $row['opmerking'];
-                                                 echo "Opmerking: ".$opmerking."<br>";
-                                            }
-
-}
-
-
-        $split=  getINIT("split_rooster");
-$tekst_grootte=  getINIT("font_size");
-        // 25 jan split rooster is variabele die wordt gebruikt om het rooster 2-yolanke-A6 te splitsen
-     /* TODO 26 oktober 2015
-      huiswerk wordt bepaald op basis van instructiegroep aangegeven bij TAAL en REKENEN
-      T1 tm T3 => werk B
-      T4 tm T6 => werk C
-      T7 => werk D
-      Rekenen door midden eerste deel is 5 tweede deel is 6
-      */
-
-//      Vaklessen gym, Atelier en Natuur en Muziek en dans
-//              In vakles aangeven welke vaklessen er gegeven worden en dan of docent of instructiegroep.
-//                  Als er een instructiegroep is aangegeven dan volgt de leerling
-//                  die les conform zijn instructiegroep anders volgt de leerling de docent.
-
-//      done - stilwerkruimte alleen medewerker ->
-
-//      TO VO L en S gaan weg en komt terug => waar ze werken. Bij niets invullen zijn ze niet speciaal.
-
-//              //              Als er in het rooster geen instructieles gepland is en geen vakles voo rdie leerling dan moet deze naar zijn ruimte (van docent).
-//    Additief vakje toevoegen dag of week taak
-      //
-
-      // 7/8
-     // overzichttaken -> uitsplitsing alleen voor rekenen en taal. zelfstandig en instructie. instructiewerk komt in roosterhok.
-
-function getStudentName($id)
-{
-
-  $sql="select * from student where iId='".$id."'";
-// zoek voro desbetreffende leerling een instructieles in dit veld. Als je niets vindt dan moet er gezocht worden naar een instructieles in het standaard instructierooster
-//echo $sql;
-     $resultaat=mysql_query($sql);
-                  while($row = mysql_fetch_array($resultaat))
-                   {
-                      $naam=$row['sNaam'];
-                  }
-
-                  return $naam;
-                   }
-
-
-                   function makeDay($week,$dag){
-     echo "<table class=\"table table-striped table-bordered table-hover\">
-                                        <thead>
-                                            <tr>
-                                                <th>WT</th>
-                                                 <th>Wat</th>
-                                                 <th>Plek</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            ";
-                                               haalDagroosterOp($week,$dag, "1");
-
-                                               haalDagroosterOp($week,$dag,"2");
-
-
-
-
-
-
-                                               haalDagroosterOp($week,$dag,"3");
-
-
-
-
-
-
-
-                                           echo "
-
-<tr>
-                                                <td colspan=3 class='center-text' >".haalAlgemeen("eindeochtend")."</td>
-                                              </tr>";
-
-                                               haalDagroosterOp($week,$dag,"4");
-
-
-
-                                               haalDagroosterOp($week,$dag,"5");
-
-
-
-
-                                            echo "
-                                            <tr>
-                                                    <td colspan=3 class='center-text'>".haalAlgemeen("middag")."</td>
+                     function makeDay($week,$dag){
+       echo "<table class=\"table table-striped table-bordered table-hover\">
+                                          <thead>
+                                              <tr>
+                                                  <th>WT</th>
+                                                   <th>Wat</th>
+                                                   <th>Plek</th>
                                               </tr>
-
+                                          </thead>
+                                          <tbody>
                                               ";
-                                               haalDagroosterOp($week,$dag,"6");
+                                                 haalDagroosterOp($week,$dag, "1");
 
-
-
-
-                                               haalDagroosterOp($week,$dag,"7");
-
-
-
-
-
-
-                                               haalDagroosterOp($week,$dag,"8");
-
-                                                 haalDagroosterOp($week,$dag,"9");
-
-                                           echo "
-                                        </tbody>
-                                </table>
-                                ";
- }
-
-
-  function makeoddDay($week,$dag){
-     echo "<table class=\"table table-striped table-bordered table-hover\">
-                                        <thead>
-                                            <tr>
-                                                <th>WT</th>
-                                                 <th>Wat</th>
-                                                 <th>Plek</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>";
-      haalDagroosterOp($week,$dag,"1");
-
-                                               haalDagroosterOp($week,$dag,"2");
+                                                 haalDagroosterOp($week,$dag,"2");
 
 
 
 
 
 
-                                               haalDagroosterOp($week,$dag,"3");
+                                                 haalDagroosterOp($week,$dag,"3");
 
 
 
@@ -247,571 +149,642 @@ function getStudentName($id)
 
 
 
-                                           echo "
-                                           <tr>
-                                                <td colspan=3 class='center-text'>".haalAlgemeen("eindeochtend")."</td>
-                                              </tr>";
+                                             echo "
 
-                                               haalDagroosterOp($week,$dag,"4");
+  <tr>
+                                                  <td colspan=3 class='center-text' >".haalAlgemeen("eindeochtend")."</td>
+                                                </tr>";
 
-
-
-                                               haalDagroosterOp($week,$dag,"5");
+                                                 haalDagroosterOp($week,$dag,"4");
 
 
+
+                                                 haalDagroosterOp($week,$dag,"5");
+
+
+
+
+                                              echo "
+                                              <tr>
+                                                      <td colspan=3 class='center-text'>".haalAlgemeen("middag")."</td>
+                                                </tr>
+
+                                                ";
                                                  haalDagroosterOp($week,$dag,"6");
 
-                                           haalDagroosterOp($week,$dag,"7");
+
+
+
+                                                 haalDagroosterOp($week,$dag,"7");
 
 
 
 
 
 
+                                                 haalDagroosterOp($week,$dag,"8");
+
+                                                   haalDagroosterOp($week,$dag,"9");
+
+                                             echo "
+                                          </tbody>
+                                  </table>
+                                  ";
+   }
 
 
-
-
-
-                                           echo "<tr>
-                                                <td colspan=3 class='center-text'>".haalAlgemeen("einde_dag")."</td>
+    function makeoddDay($week,$dag){
+       echo "<table class=\"table table-striped table-bordered table-hover\">
+                                          <thead>
+                                              <tr>
+                                                  <th>WT</th>
+                                                   <th>Wat</th>
+                                                   <th>Plek</th>
                                               </tr>
-                                        </tbody>
-                                </table>
-                                ";
- }
+                                          </thead>
+                                          <tbody>";
+        haalDagroosterOp($week,$dag,"1");
+
+                                                 haalDagroosterOp($week,$dag,"2");
 
 
 
- function getHomework($week,$dag)
+
+
+
+                                                 haalDagroosterOp($week,$dag,"3");
+
+
+
+
+
+
+
+                                             echo "
+                                             <tr>
+                                                  <td colspan=3 class='center-text'>".haalAlgemeen("eindeochtend")."</td>
+                                                </tr>";
+
+                                                 haalDagroosterOp($week,$dag,"4");
+
+
+
+                                                 haalDagroosterOp($week,$dag,"5");
+
+
+                                                   haalDagroosterOp($week,$dag,"6");
+
+                                             haalDagroosterOp($week,$dag,"7");
+
+
+
+
+
+
+
+
+
+
+
+                                             echo "<tr>
+                                                  <td colspan=3 class='center-text'>".haalAlgemeen("einde_dag")."</td>
+                                                </tr>
+                                          </tbody>
+                                  </table>
+                                  ";
+   }
+
+
+
+   function getHomework($week,$dag)
+                    {
+
+
+         echo "<table class=\"table table-striped table-bordered table-hover\">
+                                          <thead>
+                                              <tr>
+                                                  <th colspan='3'>Verplicht werk</th>
+
+                                              </tr>
+                                          </thead>
+                                          <tbody>";
+         // rooster voor volgende week
+                                             // $week=$_SESSION['weeknummer']+1;
+                                             $klas_ll=$_SESSION['klas'];
+                                              $sSql = "
+                                                  SELECT
+                                                     *
+                                                  FROM
+                                                      task WHERE iWeek='".intval($week)."' AND klas='".$klas_ll."' AND dag='".$dag."'";
+  if ($_GET['test']!=''){echo   $sSql; $_SESSION = array();}
+  // controle op course  AND iCourse='".$sss."'
+                                              $result = mysql_query($sSql);
+  //echo $sSql;
+                                              while($row = mysql_fetch_array($result))
+                                              {
+                                                 $niveau_leerling=haalniveauop($_SESSION["leerlingID"],$row['iCourse'],1);
+                                                  $dag=$row['dag'];
+                                                  $klas=$row['klas'];
+                                                   $niveau_taak=$row['sub'];
+                                                  $weeknummer=$row['iWeek'];
+
+                                            //  echo haalNaamVak($row['iCourse'])."-".$klas."-".$niveau_taak."-".$niveau_leerling."<br>";
+
+                                                 $tekst_grootte=  getINIT("font_size");
+
+                                                        // behalve rekenen, taal sw kien etc
+                                                    if ($niveau_leerling==$niveau_taak )
+                                                    {
+                                                        //echo "YIO";
+
+                                                      $td_array[]= "<tr><td style=\"font-size:".$tekst_grootte.";padding:3px\">".haalNaamVak($row['iCourse'])."</td><td style=\"font-size:".$tekst_grootte.";padding:3px\">".$niveau_taak."-".$row['sTask']."</td><td></td></tr>";
+                                                    }
+                                                     if ($niveau_leerling!=$niveau_taak )
+                                                    {
+                                                     if (
+                                                              $row['iCourse']==41
+                                                             || $row['iCourse']==32
+                                                              || $row['iCourse']==42
+                                                             || $row['iCourse']==33
+                                                             || $row['iCourse']==34
+                                                             || $row['iCourse']==40
+                                                             || $row['iCourse']==26
+                                                             || $row['iCourse']==16
+
+                                                             )
+                                                     {
+                                                     $td_array[]= "<tr><td style=\"font-size:".$tekst_grootte.";padding:3px\">".haalNaamVak($row['iCourse'])."</td><td style=\"font-size:".$tekst_grootte.";padding:3px\">".$row['sTask']."</td><td></td></tr>";
+
+                                                     }
+  //                                                       in principe wordt er alleen gekozen om de vakken van de leerling weg te schrijven boven aan de roosters
+
+  //                                                       if ($row['iCourse']==39)
+  //                                                   {
+  //
+  //                                                           $td_array[]= "<tr><td>".haalNaamVak($row['iCourse'])."</td><td>".$row['sTask']."</td><td></td></tr>";
+  //
+  //                                                   }
+
+
+                                                     }
+
+
+                                                 }
+                                                // wegschrijven van de tekst maar eerst dubbele eruit halen.
+                                                          $ges_td=array_unique($td_array);
+                                                          foreach ($ges_td as $key => $value) {
+                                                                 echo $value;
+                                                                 $context_aanwezig=1;
+                                                        }
+
+
+
+
+                                                if ($context_aanwezig==0){
+                                                  echo "<tr><td colspan=3>Geen werk voor vandaag</td></tr>";
+                                              }
+
+
+                                            echo "         </tbody>
+                                  </table>";
+
+
+
+                                              }
+
+
+  function getAdditionalCourse($blok_rooster,$blok_deel_rooster,$docent,$week,$dag)
                   {
 
+          // $week=$_SESSION['weeknummer']+1;
 
-       echo "<table class=\"table table-striped table-bordered table-hover\">
-                                        <thead>
-                                            <tr>
-                                                <th colspan='3'>Verplicht werk</th>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>";
-       // rooster voor volgende week
-                                           // $week=$_SESSION['weeknummer']+1;
-                                           $klas_ll=$_SESSION['klas'];
-                                            $sSql = "
-                                                SELECT
-                                                   *
-                                                FROM
-                                                    task WHERE iWeek='".intval($week)."' AND klas='".$klas_ll."' AND dag='".$dag."'";
-if ($_GET['test']!=''){echo   $sSql; $_SESSION = array();}
-// controle op course  AND iCourse='".$sss."'
-                                            $result = mysql_query($sSql);
-//echo $sSql;
-                                            while($row = mysql_fetch_array($result))
-                                            {
-                                               $niveau_leerling=haalniveauop($_SESSION["leerlingID"],$row['iCourse'],1);
-                                                $dag=$row['dag'];
-                                                $klas=$row['klas'];
-                                                 $niveau_taak=$row['sub'];
-                                                $weeknummer=$row['iWeek'];
 
-                                          //  echo haalNaamVak($row['iCourse'])."-".$klas."-".$niveau_taak."-".$niveau_leerling."<br>";
-
-                                               $tekst_grootte=  getINIT("font_size");
-
-                                                      // behalve rekenen, taal sw kien etc
-                                                  if ($niveau_leerling==$niveau_taak )
+      $sSql="SELECT * FROM  `extra_vakken` WHERE blok='".$blok_rooster."' AND klas='".$docent."' AND week='".$week."' AND dag='".$dag."'";
+                                           // echo $sSql;
+                                              $result_v = mysql_query($sSql);
+                                              while($row_v = mysql_fetch_array($result_v))
                                                   {
-                                                      //echo "YIO";
-
-                                                    $td_array[]= "<tr><td style=\"font-size:".$tekst_grootte.";padding:3px\">".haalNaamVak($row['iCourse'])."</td><td style=\"font-size:".$tekst_grootte.";padding:3px\">".$niveau_taak."-".$row['sTask']."</td><td></td></tr>";
+                                                   return $row_v['omschrijving'];
+                                                   //echo $row_v['sStage']."<br>";
                                                   }
-                                                   if ($niveau_leerling!=$niveau_taak )
-                                                  {
-                                                   if (
-                                                            $row['iCourse']==41
-                                                           || $row['iCourse']==32
-                                                            || $row['iCourse']==42
-                                                           || $row['iCourse']==33
-                                                           || $row['iCourse']==34
-                                                           || $row['iCourse']==40
-                                                           || $row['iCourse']==26
-                                                           || $row['iCourse']==16
+  }
 
-                                                           )
-                                                   {
-                                                   $td_array[]= "<tr><td style=\"font-size:".$tekst_grootte.";padding:3px\">".haalNaamVak($row['iCourse'])."</td><td style=\"font-size:".$tekst_grootte.";padding:3px\">".$row['sTask']."</td><td></td></tr>";
+  function haalniveauop($leerling_id,$course,$hw){
+      // Engels = 7
+      // taal = 1
+      // REkenen = 13
+      // op basis van
+         $sql="select * from student where iId='".$leerling_id."'";
+              //echo $sql."<br>";
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-                                                   }
-//                                                       in principe wordt er alleen gekozen om de vakken van de leerling weg te schrijven boven aan de roosters
+                   $instructiegroep=$row['iInstructiegroep'];
+                  $_SESSION['instructiegroep_leerling']=$instructiegroep;
 
-//                                                       if ($row['iCourse']==39)
-//                                                   {
-//
-//                                                           $td_array[]= "<tr><td>".haalNaamVak($row['iCourse'])."</td><td>".$row['sTask']."</td><td></td></tr>";
-//
-//                                                   }
+                 }
 
+  //    if ($course=="7")
+  //        {
+  //
+  //
+  //        if ($instructiegroep<4){return "B";}
+  //        if ($instructiegroep<6 && $instructiegroep >3 ){return "C";}
+  //        if ($instructiegroep=="7"){return "D";}
+  //
+  //        }
 
-                                                   }
+      if ($course=="37")
+          {
+          // taal laatste aanpassing mei 2016
+          // uit database halen taal niveau op basis hiervan niveau teruggeven.
+          // niveau uit tabel student_course_stage.
 
+                  $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
+                          . " AND iCourseId='".$course."'";
+              //echo $sql."<br>";
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-                                               }
-                                              // wegschrijven van de tekst maar eerst dubbele eruit halen.
-                                                        $ges_td=array_unique($td_array);
-                                                        foreach ($ges_td as $key => $value) {
-                                                               echo $value;
-                                                               $context_aanwezig=1;
-                                                      }
+                   $inst_taal=$row['sStage'];
 
 
+                 }
+         if ($hw!=0)   {
+          if ($inst_taal<6 ){return "B";}
+          if ($inst_taal>5){
+              if ($inst_taal<11){return "C";}
+          }
+          if ($inst_taal=="11"){return "D";}
 
+         }
 
-                                              if ($context_aanwezig==0){
-                                                echo "<tr><td colspan=3>Geen werk voor vandaag</td></tr>";
-                                            }
+          if ($hw!=1)   {  return $inst_taal;}
 
 
-                                          echo "         </tbody>
-                                </table>";
+          }
+       if ($course=="39")
+          {
 
+           $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
+                   . " AND iCourseId='".$course."'";
+              //echo $sql."<br>";
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
+                   $inst_rekenen=$row['sStage'];
 
-                                            }
 
+                 }
 
-function getAdditionalCourse($blok_rooster,$blok_deel_rooster,$docent,$week,$dag)
-                {
+          if ($hw!=0)   {
 
-        // $week=$_SESSION['weeknummer']+1;
+              if ($inst_rekenen<6){
+           return "R5";}
+          if ($inst_rekenen>5){return "R6";}
+          }
+             if ($hw!=1)   {  return $inst_rekenen;}
 
 
+          }
 
-    $sSql="SELECT * FROM  `extra_vakken` WHERE blok='".$blok_rooster."' AND klas='".$docent."' AND week='".$week."' AND dag='".$dag."'";
-                                         // echo $sSql;
-                                            $result_v = mysql_query($sSql);
-                                            while($row_v = mysql_fetch_array($result_v))
-                                                {
-                                                 return $row_v['omschrijving'];
-                                                 //echo $row_v['sStage']."<br>";
-                                                }
-}
+      if ($course=="27")
+          {
 
-function haalniveauop($leerling_id,$course,$hw){
-    // Engels = 7
-    // taal = 1
-    // REkenen = 13
-    // op basis van
-       $sql="select * from student where iId='".$leerling_id."'";
-            //echo $sql."<br>";
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
+           $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
+                   . " AND iCourseId='".$course."'";
+            //  echo $sql."<br>";
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-                 $instructiegroep=$row['iInstructiegroep'];
-                $_SESSION['instructiegroep_leerling']=$instructiegroep;
+                   $inst_NB=$row['sStage'];
+                 return $inst_NB;
 
-               }
+                 }
+                 //echo "het niveau voor deze leerling is".$inst_rekenen;
 
-//    if ($course=="7")
-//        {
-//
-//
-//        if ($instructiegroep<4){return "B";}
-//        if ($instructiegroep<6 && $instructiegroep >3 ){return "C";}
-//        if ($instructiegroep=="7"){return "D";}
-//
-//        }
 
-    if ($course=="37")
-        {
-        // taal laatste aanpassing mei 2016
-        // uit database halen taal niveau op basis hiervan niveau teruggeven.
-        // niveau uit tabel student_course_stage.
 
-                $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
-                        . " AND iCourseId='".$course."'";
-            //echo $sql."<br>";
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
 
-                 $inst_taal=$row['sStage'];
 
 
-               }
-       if ($hw!=0)   {
-        if ($inst_taal<6 ){return "B";}
-        if ($inst_taal>5){
-            if ($inst_taal<11){return "C";}
-        }
-        if ($inst_taal=="11"){return "D";}
+          }
+           if ($course=="20")
+          {
 
-       }
+           $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
+                   . " AND iCourseId='".$course."'";
+            //  echo $sql."<br>";
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-        if ($hw!=1)   {  return $inst_taal;}
+                   $inst_S=$row['sStage'];
+                 return $inst_S;
 
+                 }
+                 //echo "het niveau voor deze leerling is".$inst_rekenen;
 
-        }
-     if ($course=="39")
-        {
 
-         $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
-                 . " AND iCourseId='".$course."'";
-            //echo $sql."<br>";
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
 
-                 $inst_rekenen=$row['sStage'];
 
 
-               }
 
-        if ($hw!=0)   {
+          }
 
-            if ($inst_rekenen<6){
-         return "R5";}
-        if ($inst_rekenen>5){return "R6";}
-        }
-           if ($hw!=1)   {  return $inst_rekenen;}
+            if ($course=="15")
+          {
 
+           $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
+                   . " AND iCourseId='".$course."'";
+            //  echo $sql."<br>";
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-        }
+                   $inst_RK=$row['sStage'];
+                 return $inst_RK;
 
-    if ($course=="27")
-        {
+                 }
+                 //echo "het niveau voor deze leerling is".$inst_rekenen;
 
-         $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
-                 . " AND iCourseId='".$course."'";
-          //  echo $sql."<br>";
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
 
-                 $inst_NB=$row['sStage'];
-               return $inst_NB;
 
-               }
-               //echo "het niveau voor deze leerling is".$inst_rekenen;
 
 
 
+          }
 
+      else {
+     return $instructiegroep;
+      }
 
+  }
+   function getTeacher($klas)
+   {
+     $sql="select sNaam from teachers where klas='".$klas."'";
+     //echo $sql;
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-        }
-         if ($course=="20")
-        {
+                   return $row['sNaam'];
+                 }
 
-         $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
-                 . " AND iCourseId='".$course."'";
-          //  echo $sql."<br>";
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
+   }
 
-                 $inst_S=$row['sStage'];
-               return $inst_S;
+   function getNameTeacher($id)
+   {
+     $sql="select sNaam from teachers where sCode='".$id."'";
+     //echo $sql;
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-               }
-               //echo "het niveau voor deze leerling is".$inst_rekenen;
+                  return $row['sNaam'];
+                 }
 
+   }
 
 
+          function haalNaamVak($id)
+          {
+            $sql="select * from courses where id='".$id."'";
 
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
+                   return $row['naam'];
+                 }
 
+          }
 
-        }
+          function haalNaamstudent($id)
+          {
+              $sql="select * from student where iId='".$id."'";
 
-          if ($course=="15")
-        {
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
+                   return $row['sNaam'];
+                 }
+          }
 
-         $sql="select * from student_course_stage where iStudentId='".$_SESSION["leerlingID"]."'"
-                 . " AND iCourseId='".$course."'";
-          //  echo $sql."<br>";
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
 
-                 $inst_RK=$row['sStage'];
-               return $inst_RK;
+          function haalExtraroosterop($week,$dag,$blok){
+              ConnectSQLDatabase();
+              //echo "weeknummer".$week;
+              $split=  getINIT("split_rooster");
+              //dubbel
+                $sql="select * from schedule_extra where weeknummer='".$week."' and dag='".$dag."' and blok='".$blok."'";
 
-               }
-               //echo "het niveau voor deze leerling is".$inst_rekenen;
+               $resultaat=mysql_query($sql);
 
+               while($row = mysql_fetch_array($resultaat))
+                 {
 
-
-
-
-
-        }
-
-    else {
-   return $instructiegroep;
-    }
-
-}
- function getTeacher($klas)
- {
-   $sql="select sNaam from teachers where klas='".$klas."'";
-   //echo $sql;
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
-
-                 return $row['sNaam'];
-               }
-
- }
-
- function getNameTeacher($id)
- {
-   $sql="select sNaam from teachers where sCode='".$id."'";
-   //echo $sql;
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
-
-                return $row['sNaam'];
-               }
-
- }
-
-
-        function haalNaamVak($id)
-        {
-          $sql="select * from courses where id='".$id."'";
-
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
-                 return $row['naam'];
-               }
-
-        }
-
-        function haalNaamstudent($id)
-        {
-            $sql="select * from student where iId='".$id."'";
-
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
-                 return $row['sNaam'];
-               }
-        }
-
-
-        function haalExtraroosterop($week,$dag,$blok){
-            ConnectSQLDatabase();
-            //echo "weeknummer".$week;
-            $split=  getINIT("split_rooster");
-            //dubbel
-              $sql="select * from schedule_extra where weeknummer='".$week."' and dag='".$dag."' and blok='".$blok."'";
-
-             $resultaat=mysql_query($sql);
-
-             while($row = mysql_fetch_array($resultaat))
-               {
-
-               $locatie= array("paars", "blauw", "groen","oranje", "vloer","stilwerk","vakles");
-               $wat_docent[].=$row['paars'];
-               $wat_docent[].=$row['blauw'];
-               $wat_docent[].=$row['groen'];
-                $wat_docent[].=$row['geel'];
-                $wat_docent[].=$row['vloer'];
-                $wat_docent[].=$row['stilwerk'];
-                $wat_docent[].=$row['vakles'];
-                $klas_ll=$_SESSION['klas'];
-
-               // $docent=getTeacher($klas_ll);
-
-                for ($i=0;$i<count($wat_docent);$i++)
-                {
-
-                 $elementen = explode($split, $wat_docent[$i]);
-
-
-                $vak_db=$elementen[0];
-                $docent_db=trim($elementen[1]);
-                $instructiegroep_rooster=$elementen[2];
-
-                $niveau_leerling=haalniveauop($_SESSION["leerlingID"], $vak_db,0)   ;
-                //echo $niveau_leerling."-".$instructiegroep_rooster;
-            //var_dump($elementen);
-
-                     if ($niveau_leerling==$instructiegroep_rooster)
-                         {
-
-                             $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
-
-                             $plek.=$locatie[$i]."<br>";
-                          }
-                      // MAAR vaklessen hebben nu eenmaal geen instructiegroep dus
-                          if ($instructiegroep_rooster=="" && $docent_db=="Karen"){$docent_db="Joyce";$docent_db_alternatief="Karen";}
-                           if ($i==6 && $instructiegroep_rooster=="" && $docent_db== getNameTeacher($_SESSION['sCode']))
-                         {
-                             if ($docent_db_alternatief!=""){$docent_db="Karen";}
-                             $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
-
-                             $plek.=$locatie[$i]."<br>";
-                             $docent_db_alternatief="";
-                          }
-
-
-
-                }
-                $antwoord[0]=$blok;
-                $antwoord[1]=$wat;
-                $antwoord[2]=$plek;
-               // var_dump($antwoord);
-               }
-            return $antwoord;
-
-        }
-
-
-
-         function haalDagroosterOp($week,$dag,$blok)
-                {
-            // huidige week.
-           ConnectSQLDatabase();
-             $split=  getINIT("split_rooster");
-           // $week=intval(date('W'))+1;
-             $sql="select * from schedule where weeknummer='".$week."' and dag='".$dag."' and blok='".$blok."'";
-        // echo "<br><pre>".$sql."</pre>";
-
-
-             $resultaat=mysql_query($sql);
-             while($row = mysql_fetch_array($resultaat))
-               {
-               $docent_oud="";
-               $locatie= array("paars", "blauw", "groen","oranje", "vloer","stilwerk","vakles");
+                 $locatie= array("paars", "blauw", "groen","oranje", "vloer","stilwerk","vakles");
                  $wat_docent[].=$row['paars'];
                  $wat_docent[].=$row['blauw'];
-                $wat_docent[].=$row['groen'];
-                $wat_docent[].=$row['geel'];
-                $wat_docent[].=$row['vloer'];
-                $wat_docent[].=$row['stilwerk'];
-                $wat_docent[].=$row['vakles'];
-                $klas_ll=$_SESSION['klas'];
-                $docent=getNameTeacher($_SESSION['sCode']);
+                 $wat_docent[].=$row['groen'];
+                  $wat_docent[].=$row['geel'];
+                  $wat_docent[].=$row['vloer'];
+                  $wat_docent[].=$row['stilwerk'];
+                  $wat_docent[].=$row['vakles'];
+                  $klas_ll=$_SESSION['klas'];
 
-                for ($i=0;$i<count($wat_docent);$i++)
-                {
-               // wat docent is het rooster vak-naam-niveau
+                 // $docent=getTeacher($klas_ll);
 
-                 $elementen = explode($split, $wat_docent[$i]);
-                 $instructiegroep_rooster=$elementen[2];
-                 // bij vakles is het vakgevuld en de docent.. dan draait het zich om kijken naar docent
-                 $vak_db=$elementen[0];
+                  for ($i=0;$i<count($wat_docent);$i++)
+                  {
 
-                $docent_db=trim($elementen[1]);
+                   $elementen = explode($split, $wat_docent[$i]);
 
 
+                  $vak_db=$elementen[0];
+                  $docent_db=trim($elementen[1]);
+                  $instructiegroep_rooster=$elementen[2];
+
+                  $niveau_leerling=haalniveauop($_SESSION["leerlingID"], $vak_db,0)   ;
+                  //echo $niveau_leerling."-".$instructiegroep_rooster;
+              //var_dump($elementen);
+
+                       if ($niveau_leerling==$instructiegroep_rooster)
+                           {
+
+                               $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
+
+                               $plek.=$locatie[$i]."<br>";
+                            }
+                        // MAAR vaklessen hebben nu eenmaal geen instructiegroep dus
+                            if ($instructiegroep_rooster=="" && $docent_db=="Karen"){$docent_db="Joyce";$docent_db_alternatief="Karen";}
+                             if ($i==6 && $instructiegroep_rooster=="" && $docent_db== getNameTeacher($_SESSION['sCode']))
+                           {
+                               if ($docent_db_alternatief!=""){$docent_db="Karen";}
+                               $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
+
+                               $plek.=$locatie[$i]."<br>";
+                               $docent_db_alternatief="";
+                            }
 
 
-                $niveau_leerling=haalniveauop($_SESSION["leerlingID"], $vak_db,0)   ;
-// if ($vak_db==27){
-//                echo "<pre>";
-//                var_dump($elementen);
-//                  echo "</pre>";}
+
+                  }
+                  $antwoord[0]=$blok;
+                  $antwoord[1]=$wat;
+                  $antwoord[2]=$plek;
+                 // var_dump($antwoord);
+                 }
+              return $antwoord;
+
+          }
 
 
 
-if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instructiegroep_rooster."-".$vak_db."<br>";}
-                     // dit is variabel alleen als klassen twee docenten hebben .
-                     if ($docent_db=="Karen"){$docent_db="Joyce";$docent_oud="Karen";}
+           function haalDagroosterOp($week,$dag,$blok)
+                  {
+              // huidige week.
+             ConnectSQLDatabase();
+               $split=  getINIT("split_rooster");
+             // $week=intval(date('W'))+1;
+               $sql="select * from schedule where weeknummer='".$week."' and dag='".$dag."' and blok='".$blok."'";
+          // echo "<br><pre>".$sql."</pre>";
 
-                     if ($niveau_leerling==$instructiegroep_rooster)
+
+               $resultaat=mysql_query($sql);
+               while($row = mysql_fetch_array($resultaat))
+                 {
+                 $docent_oud="";
+                 $locatie= array("paars", "blauw", "groen","oranje", "vloer","stilwerk","vakles");
+                   $wat_docent[].=$row['paars'];
+                   $wat_docent[].=$row['blauw'];
+                  $wat_docent[].=$row['groen'];
+                  $wat_docent[].=$row['geel'];
+                  $wat_docent[].=$row['vloer'];
+                  $wat_docent[].=$row['stilwerk'];
+                  $wat_docent[].=$row['vakles'];
+                  $klas_ll=$_SESSION['klas'];
+                  $docent=getNameTeacher($_SESSION['sCode']);
+
+                  for ($i=0;$i<count($wat_docent);$i++)
+                  {
+                 // wat docent is het rooster vak-naam-niveau
+
+                   $elementen = explode($split, $wat_docent[$i]);
+                   $instructiegroep_rooster=$elementen[2];
+                   // bij vakles is het vakgevuld en de docent.. dan draait het zich om kijken naar docent
+                   $vak_db=$elementen[0];
+
+                  $docent_db=trim($elementen[1]);
+
+
+
+
+                  $niveau_leerling=haalniveauop($_SESSION["leerlingID"], $vak_db,0)   ;
+  // if ($vak_db==27){
+  //                echo "<pre>";
+  //                var_dump($elementen);
+  //                  echo "</pre>";}
+
+
+
+  if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instructiegroep_rooster."-".$vak_db."<br>";}
+                       // dit is variabel alleen als klassen twee docenten hebben .
+                       if ($docent_db=="Karen"){$docent_db="Joyce";$docent_oud="Karen";}
+
+                       if ($niveau_leerling==$instructiegroep_rooster)
+                           {
+                            if($docent_oud!=""){$docent_db=$docent_oud;}
+
+                               $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
+                               $plek.=$locatie[$i]."<br>";
+
+                            }
+
+                              if ($instructiegroep_rooster=="" && (trim($docent_db)==trim($docent)) && $i==6)
+                                {
+                                   if($docent_oud!=""){$docent_db=$docent_oud;}
+                                        $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
+                                        $plek.=$locatie[$i]."<br>";
+
+                            }
+                    // een beetje slordige oplossing.
+                            if (haalNaamVak($vak_db)=="Lezen" && $algebruikt==0)
+                                {
+
+                                           $algebruikt=1;
+                                           $wat.= haalNaamVak($vak_db)."<br>";
+
+                               $plek.=""."<br>";
+                            }
+
+
+
+
+  //                           if (($docent_db==$docent))
+  //                         {
+  //
+  //                             $wat.= $docent_db."<br>";
+  //                             $plek.=$locatie[$i]."<br>";
+  //                          }
+  //                    }
+
+
+                  $extrataak=haalExtraroosterop($week,$dag,$blok);
+                //echo "Bram".$blok;
+                  $docent_oud="";
+
+                  }
+
+
+                  if (($blok=="9" || $blok=="1")&& $wat=="" && $extrataak[1]=="")
+                  {
+                      if ($blok=="9"){$moment="einde_dag";}
+                      if ($blok=="1"){$moment="ochtend";}
+                      $td_wat_plek.= "<tr><td colspan=3 class='center-text'>".haalAlgemeen($moment)."</td></tr>";
+
+                  }
+
+
+
+
+
+                 else
+                  {
+
+                      if ( $wat=="" && $extrataak[1]=="")
                          {
-                          if($docent_oud!=""){$docent_db=$docent_oud;}
-
-                             $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
-                             $plek.=$locatie[$i]."<br>";
-
-                          }
-
-                            if ($instructiegroep_rooster=="" && (trim($docent_db)==trim($docent)) && $i==6)
-                              {
-                                 if($docent_oud!=""){$docent_db=$docent_oud;}
-                                      $wat.= haalNaamVak($vak_db)." (".$docent_db.")<br>";
-                                      $plek.=$locatie[$i]."<br>";
-
-                          }
-                  // een beetje slordige oplossing.
-                          if (haalNaamVak($vak_db)=="Lezen" && $algebruikt==0)
-                              {
-
-                                         $algebruikt=1;
-                                         $wat.= haalNaamVak($vak_db)."<br>";
-
-                             $plek.=""."<br>";
-                          }
+                             $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$_SESSION['volgende_weeknummer'],$dag);
+                            //echo "dsf";
+                           // exit();
+                             // als er geen informatie wordt gevonden dan alleen blok laten zien.
+                            $td_wat_plek.="<tr><td>".$blok."</td><td>".$omschrijving."</td><td></td></tr>";
+                         }
+                     if ( $wat!="" || $extrataak[1]!="")
+                        {
+                         $td_wat_plek.= "<tr><td>".$blok."</td><td>".$wat.$extrataak[1]."</td><td>".$plek.$extrataak[2]."</td></tr>";
+                        }
+                   if ($blok=="9")
+                  {
+                  $td_wat_plek.= "<tr><td colspan=3 class='center-text'>".haalAlgemeen("einde_dag")."</td></tr>";
 
 
+                  }
 
+                 }
 
-//                           if (($docent_db==$docent))
-//                         {
-//
-//                             $wat.= $docent_db."<br>";
-//                             $plek.=$locatie[$i]."<br>";
-//                          }
-//                    }
-
-
-                $extrataak=haalExtraroosterop($week,$dag,$blok);
-              //echo "Bram".$blok;
-                $docent_oud="";
-
-                }
-
-
-                if (($blok=="9" || $blok=="1")&& $wat=="" && $extrataak[1]=="")
-                {
-                    if ($blok=="9"){$moment="einde_dag";}
-                    if ($blok=="1"){$moment="ochtend";}
-                    $td_wat_plek.= "<tr><td colspan=3 class='center-text'>".haalAlgemeen($moment)."</td></tr>";
-
-                }
+                 // $td_wat_plek.= "<tr><td>".$blok."</td><td>".$wat.$extrataak[1]."</td><td>".$plek.$extrataak[2]."</td></tr>";
 
 
 
 
 
-               else
-                {
-
-                    if ( $wat=="" && $extrataak[1]=="")
-                       {
-                           $omschrijving=getAdditionalCourse($blok,$blok_deel_rooster,$_SESSION['sCode'],$_SESSION['volgende_weeknummer'],$dag);
-                          //echo "dsf";
-                         // exit();
-                           // als er geen informatie wordt gevonden dan alleen blok laten zien.
-                          $td_wat_plek.="<tr><td>".$blok."</td><td>".$omschrijving."</td><td></td></tr>";
-                       }
-                   if ( $wat!="" || $extrataak[1]!="")
-                      {
-                       $td_wat_plek.= "<tr><td>".$blok."</td><td>".$wat.$extrataak[1]."</td><td>".$plek.$extrataak[2]."</td></tr>";
-                      }
-                 if ($blok=="9")
-                {
-                $td_wat_plek.= "<tr><td colspan=3 class='center-text'>".haalAlgemeen("einde_dag")."</td></tr>";
-
-
-                }
-
-               }
-
-               // $td_wat_plek.= "<tr><td>".$blok."</td><td>".$wat.$extrataak[1]."</td><td>".$plek.$extrataak[2]."</td></tr>";
-
-
-
-
-
-                }
+                  }
 
 
 
@@ -823,18 +796,37 @@ if ($_GET['test']!="" && $dag==5 && $blok=="1"){echo $niveau_leerling."-".$instr
 
 
 
-                echo $td_wat_plek;
-                $td_wat_plek="";
-        }
+                  echo $td_wat_plek;
+                  $td_wat_plek="";
+          }
 
-
-        ?>
+?>
+<!DOCTYPE html>
+<html lang="nl"><head>
+  <style>
+    .center{
+      position: absolute;
+      height: 20px;
+      width: 50px;
+      z-index: 100;
+      top:calc(50% - 50px/2);
+      left:calc(50% - 50px/2);
+    }
+  </style>
+  <!--<script type="text/javascript" src="jspdf.debug.js"></script>-->
+  <?php
+  include("header_new.inc");
+  ConnectSQLDatabase();
+  ?>
     </head>
 
     <body>
   <div class="center" id='loadingimg'><img src="img/pdfloader.gif"></div>
         <div id="wrapper">
-         <?php include ("menutop.inc"); ?>
+        <?php
+          include ("menutop.inc");
+          //TODO: Er zit een non-https verwijzing in deze include. Is niet secure.
+        ?>
  		 <?php include ("menu.inc") ;?>
 
             <!-- Page Content -->
