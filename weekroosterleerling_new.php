@@ -840,16 +840,16 @@
     }
   <? } else { ?>
     .page-break-after {
-      /* page-break-after: always; */
+      page-break-after: always;
     }
     .page-break-after:last-child {
-      /* page-break-after: avoid; */
+      page-break-after: avoid;
     }
     body {
       background-color: #fff !important;
       padding: 10px 10px 10px 10px;
     }
-    /* KAN MOOIER VOOR PRINT MEDIA ALLEEN? OF BREEDTE INSTELLEN OID */
+    /* TODO: KAN MOOIER VOOR PRINT MEDIA ALLEEN? OF BREEDTE INSTELLEN OID */
     .col-lg-12{width:99%; float:left;}
     .col-lg-4 {width:33%; float:left;}
   <? } ?>
