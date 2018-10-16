@@ -1,16 +1,16 @@
 <?php error_reporting(0);session_start();?>
 <?
   //TODO: controleren of het klopt met recente week pdf en met juiste variabelen
-  //TODO: checken of het dan op 1A4 past, misschien wat kleiner maken
-  //TODO: PDF maker afmaken
-  //TODO: cronjob maken + script met juiste variabelen (ll in klas bij scode)
+  //TODO: PDF maker afmaken met juiste id's, klas, docent, scode en juiste naam van de files
+  //TODO: cronjob maken
+  //TODO: styling PDF fixen, o.a.: https://stackoverflow.com/questions/15746240/helvetica-font-not-working-in-wkhtmltopdf
+
 
   /* IDEAS */
-  //TODO: verder ordenen
-  //TODO: functions opruimen
-  //TODO: css netjes in files
-  //TODO: Zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven
-  //TODO: Alle sessie variabelen eruit
+  //TODO: functions opruimen/ ordenen
+  //TODO: css netjes in aparte files
+  //TODO: zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven
+  //TODO: alle sessie variabelen eruit (sCODE en instructiegroep_leerling)
   //TODO: klasses maken
   //TODO: andere database tussenlaag
   //TODO: templatetaal gebruiken
