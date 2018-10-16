@@ -848,6 +848,19 @@
     body {
       background-color: #fff !important;
       padding: 10px 10px 10px 10px;
+      font-size: 12px !important;
+    }
+    .panel {
+      margin-bottom: 15px !important;
+    }
+    .panel-heading, .panel-body {
+      padding: 5px 15px !important;
+    }
+    h4 {
+      font-size: 14px !important;
+    }
+    h5 {
+      font-size: 12px !important;
     }
     /* TODO: KAN MOOIER VOOR PRINT MEDIA ALLEEN? OF BREEDTE INSTELLEN OID */
     .col-lg-12{width:99%; float:left;}
