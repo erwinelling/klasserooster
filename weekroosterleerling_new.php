@@ -26,6 +26,7 @@
   else {
     $leerling_array = $_GET['ll'];
   }
+  // TODO obv scode alle leerling id's ophalen en dan voor de hele klas een rooster genereren
 
   if(isset($_GET['docent'])) {
     // Don't use existing session var, but use GET var
