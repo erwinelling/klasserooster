@@ -313,6 +313,16 @@
 
                                                  $tekst_grootte=  getINIT("font_size");
 
+                                                //TODO: Refactor ivm lelijke oplossing
+                                                 if ($row['iCourse']=='37')
+                                                 {
+
+                                                          // toevoeging nav toevoeging staal.
+                                                          if ($niveau_leerling<6) {$niveau_leerling='5';}
+                                                          if ($niveau_leerling>5) {$niveau_leerling='6';}
+
+                                                  }
+
                                                         // behalve rekenen, taal sw kien etc
                                                     if ($niveau_leerling==$niveau_taak )
                                                     {
