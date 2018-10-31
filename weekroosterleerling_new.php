@@ -1,17 +1,16 @@
  <?php error_reporting(0);session_start();?>
 <?
-  //TODO: controleren of de command line versie van wkhtmltopdf iets anders doet dan de php interfacevan
-  //TODO: controleren of het klopt met recente week pdf en met juiste variabelen
-  //TODO: PDF maker afmaken met juiste id's, klas, docent, scode en juiste naam van de files
-  //TODO: cronjob maken
-  //TODO: styling PDF fixen, o.a.: https://stackoverflow.com/questions/15746240/helvetica-font-not-working-in-wkhtmltopdf
+  //TODO: aanpassen zodat er per docent (obv scode) wordt gezocht naar de leerlingen die daarbij horen
+  //TODO: cronjobs maken die per docent pdf generereert: https://keesboeke.guifiontwikkelt.nl/dompdf/pdfs/JBR-45-rooster.pdf
+  //voor deze docenten: JBR MA MXI YO JE, allemaal klas 1,
 
 
   /* IDEAS */
+  //TODO: Github? (en evt. continuous integration toevoegen)
   //TODO: functions opruimen/ ordenen
   //TODO: css netjes in aparte files
   //TODO: zorgen voor foutmeldingen als niet de juiste _GET variabelen worden gegeven
-  //TODO: alle sessie variabelen eruit (sCODE en instructiegroep_leerling)
+  //TODO: alle sessie variabelen eruit (sCODE)
   //TODO: klasses maken
   //TODO: andere database tussenlaag
   //TODO: templatetaal gebruiken
@@ -27,6 +26,7 @@
     $leerling_array = $_GET['ll'];
   }
   // TODO obv scode alle leerling id's ophalen en dan voor de hele klas een rooster genereren
+  // get iId from student where sDocent = sCode
 
   if(isset($_GET['docent'])) {
     // Don't use existing session var, but use GET var
@@ -907,7 +907,6 @@
     <?php
       if($_GET['output']!="clean") { // DO NOT SHOW IN CLEAN VERSION FOR PDF
         include ("menutop.inc");
-        //TODO: Er zit een non-https verwijzing in deze include. Is niet secure.
         include ("menu.inc");
       }
     ?>
@@ -915,8 +914,8 @@
     <!-- Page Content -->
     <div id="page-wrapper">
       <?
-        //FORLOOP PAGE STARTS HERE
-        foreach($leerling_array as $leerling_id) {
+          //FORLOOP PAGE STARTS HERE
+          foreach($leerling_array as $leerling_id) {
       ?>
       <div class="row">
         <div class="col-lg-12">
