@@ -413,7 +413,7 @@
                  {
 
                    $instructiegroep=$row['iInstructiegroep'];
-                  $_SESSION['instructiegroep_leerling']=$instructiegroep;
+                //  $_SESSION['instructiegroep_leerling']=$instructiegroep;
 
                  }
 
