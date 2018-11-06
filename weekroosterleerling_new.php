@@ -15,18 +15,29 @@
   //TODO: andere database tussenlaag
   //TODO: templatetaal gebruiken
 
+  include("includes/functions.php");
+  ConnectSQLDatabase();
+
   /* DEFINE GET/SESSION VARIABLES */
   //e.g. ll[]=261 or ll[]=261
   //&ll[]=287&ll[]=282&ll[]=264&ll[]=263&ll[]=278&ll[]=288&ll[]=284&ll[]=270&ll[]=286&ll[]=276&ll[]=262&ll[]=285&ll[]=280&ll[]
-  if(isset($_GET['ll']) && !is_array($_GET['ll'])) {
-    // TURN LEERLING_ID INTO ARRAY
+
+  if(!isset($_GET['ll']) && isset($_GET['sCode'])){
+    // obv scode alle leerling id's ophalen en dan voor de hele klas een rooster genereren
+    $sSql = "SELECT iId FROM student where sDocent='".$_GET['sCode']."'";
+    $result = mysql_query($sSql);
+    while($row = mysql_fetch_array($result)) {
+      $leerling_array[]= $row['iId'];
+    }
+  }
+  elseif(isset($_GET['ll']) && !is_array($_GET['ll'])) {
+    // MAAK EEN ARRAY VAN LEERLING_ID
     $leerling_array = array($_GET['ll']);
   }
   else {
+    // LEERLING ID'S ZIJN AL EEN ARRAY
     $leerling_array = $_GET['ll'];
   }
-  // TODO obv scode alle leerling id's ophalen en dan voor de hele klas een rooster genereren
-  // get iId from student where sDocent = sCode
 
   if(isset($_GET['docent'])) {
     // Don't use existing session var, but use GET var
@@ -70,8 +81,6 @@
   }
 
   /* DEFINE FUNCTIONS */
-  include("includes/functions.php");
-  ConnectSQLDatabase();
 
   function haalAlgemeen($tijd)
   {
